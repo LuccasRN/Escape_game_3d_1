@@ -9,7 +9,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js'
-import { useGameState } from '@/composables/useGameState.js'
+import { useGameState } from '@/composables/useGameState.vue'
 
 const containerRef = ref(null)
 const SKY_COLOR = 0x87ceeb
@@ -105,7 +105,7 @@ function initScene() {
   const skyMat = new THREE.MeshBasicMaterial({ color: SKY_COLOR })
 
   loader.load(
-    '/model/Pharmacie_01_compressed.glb',
+    '/model/Pharmacie_test_texture_3_compressed.glb',
     (gltf) => {
       const model = gltf.scene
       model.traverse((child) => {

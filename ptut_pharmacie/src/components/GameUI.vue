@@ -270,7 +270,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useGameState } from '@/composables/useGameState.js'
+import { useGameState } from '@/composables/useGameState.vue'
 import MiniGame from './MiniGame.vue'
 
 const {

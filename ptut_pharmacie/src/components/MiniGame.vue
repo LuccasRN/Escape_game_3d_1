@@ -22,7 +22,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { loadImage, SpriteAnimation } from '../composables/useSpriteEngine.js'
+import { loadImage, SpriteAnimation } from '../composables/useSpriteEngine.vue'
 
 const emit = defineEmits(['victory', 'close'])
 
@@ -99,9 +99,9 @@ const ATTACK_FRAME_DURATION = 70 // ms per frame
 // Platforms
 const platforms = [
   { x: 0, y: GROUND_Y, w: CANVAS_W, h: 40 },       // ground
-  { x: 120, y: 310, w: 160, h: 16 },                 // left platform
-  { x: 500, y: 260, w: 180, h: 16 },                 // right platform
-  { x: 300, y: 180, w: 140, h: 16 },                 // top center
+  { x: 120, y: 320, w: 160, h: 16 },                 // left platform
+  { x: 500, y: 280, w: 180, h: 16 },                 // right platform
+  { x: 300, y: 200, w: 140, h: 16 },                 // top center
 ]
 
 // Player state
@@ -246,7 +246,7 @@ function updatePlayer(dt) {
 
   // Jump
   if ((keys['Space'] || keys['ArrowUp'] || keys['KeyW']) && player.onGround) {
-    player.vy = -12
+    player.vy = -14
     player.onGround = false
   }
 
@@ -326,6 +326,7 @@ function updateBoss(dt) {
         if (boss.phase === 1) {
           boss.state = 'walk'
           boss.stateTimer = 2000
+          penguMove.reset()
         } else if (boss.phase === 2) {
           if (dist < 120) {
             boss.state = 'attack_peck'
@@ -350,6 +351,7 @@ function updateBoss(dt) {
           } else {
             boss.state = 'walk'
             boss.stateTimer = 1500
+            penguMove.reset()
           }
         }
       }
@@ -600,7 +602,7 @@ function render(ctx) {
       default: bossSprite = penguIdle; break
     }
     if (bossSprite) {
-      bossSprite.draw(ctx, boss.x, boss.y, SCALE_PENGU, boss.facingRight)
+      bossSprite.draw(ctx, boss.x, boss.y, SCALE_PENGU, !boss.facingRight)
     }
 
     // Ray beam visual
