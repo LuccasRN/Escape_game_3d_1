@@ -29,6 +29,10 @@ export const authService = {
     // === 🛠️ SIMULATION TEMPORAIRE (À SUPPRIMER) ===
     console.log("SIMULATION: Enregistrement envoyé au backend", userData);
     return new Promise(resolve => setTimeout(() => {
+      // 🐛 Correction : Stockage local simulé pour que l'affichage sur le Dashboard fonctionne
+      const fullName = `${userData.prenom} ${userData.nom}`;
+      localStorage.setItem('registeredUserName', fullName);
+      
       resolve({ success: true, user: userData, token: 'fake-jwt-token' });
     }, 800));
   },
