@@ -15,15 +15,15 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
-@Inheritance(strategy = InheritanceType.JOINED) // Estrategia para generar tablas separadas
+@Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @NoArgsConstructor
 public class User {
-    
+
     @Id
-    
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_utilisateur;
+    @Column(name = "id_utilisateur") // El nombre en BD sigue igual
+    private Long id; // <-- CAMBIO: de id_utilisateur a id
 
     @Column(unique = true, nullable = false)
     private String email;
