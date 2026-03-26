@@ -18,8 +18,12 @@
         <label>Mot de passe</label>
         <input type="password" v-model="password" placeholder="••••••••" required />
       </div>
-
-      <button type="submit" class="submit-btn">Se connecter</button>
+      <p v-if="errorMsg" style="color:#f87171;font-size:0.85rem;text-align:center;margin-bottom:0.5rem;">
+        {{ errorMsg }}
+      </p>
+      <button type="submit" class="submit-btn" :disabled="loading">
+        {{ loading ? 'Connexion...' : 'Se connecter' }}
+      </button>
     </form>
 
     <div class="footer-link">
@@ -31,22 +35,26 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { authService } from '../services/api' // API prête pour backend
+import { authService } from '../services/api'
 
 const router = useRouter()
 const email = ref('')
 const password = ref('')
+const errorMsg = ref('')
+const loading = ref(false)
 
 const handleLogin = async () => {
+  errorMsg.value = ''
+  loading.value = true
   try {
-    // 🔗 APPEL AU SERVICE API
     const response = await authService.login(email.value, password.value)
-    if(response.success) {
+    if (response.success) {
       router.push('/dashboard')
     }
   } catch (error) {
-    console.error("Problème de connexion:", error)
-    alert("Veuillez vérifier vos identifiants.")
+    errorMsg.value = 'Email ou mot de passe incorrect.'
+  } finally {
+    loading.value = false
   }
 }
 </script>

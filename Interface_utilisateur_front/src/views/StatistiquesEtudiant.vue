@@ -141,25 +141,38 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { studentService, authService } from '../services/api'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const userName = ref('Étudiant')
 const userInitials = ref('ET')
 const userEmail = ref('etudiant@example.com')
+const stats = ref(null)
+const loading = ref(true)
 
-onMounted(() => {
+onMounted(async () => {
   const storedName = localStorage.getItem('registeredUserName')
   if (storedName) {
     userName.value = storedName
-    
-    // Create initials
     const parts = storedName.split(' ')
-    if(parts.length > 1) {
-      userInitials.value = (parts[0][0] + parts[1][0]).toUpperCase()
-      userEmail.value = `${parts[0]}.${parts[1]}@example.com`.toLowerCase()
-    } else {
-      userInitials.value = parts[0][0].toUpperCase() + 'U'
-      userEmail.value = `${parts[0]}@example.com`.toLowerCase()
+    userInitials.value = parts.length > 1
+      ? (parts[0][0] + parts[1][0]).toUpperCase()
+      : parts[0][0].toUpperCase() + 'U'
+  }
+
+  userEmail.value = localStorage.getItem('userEmail') || 'etudiant@example.com'
+
+  try {
+    stats.value = await studentService.getMyStats()
+  } catch (error) {
+    console.error('Erreur stats:', error)
+    if (error.message.startsWith('401') || error.message.startsWith('403')) {
+      authService.logout()
+      router.push('/connexion')
     }
+  } finally {
+    loading.value = false
   }
 })
 </script>

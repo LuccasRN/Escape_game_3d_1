@@ -49,8 +49,12 @@
         </div>
         <label for="terms">J'accepte les <a href="#">conditions de confidentialité</a></label>
       </div>
-
-      <button type="submit" class="submit-btn">S'inscrire</button>
+      <p v-if="errorMsg" style="color:#f87171;font-size:0.85rem;text-align:center;margin-bottom:0.5rem;">
+        {{ errorMsg }}
+      </p>
+      <button type="submit" class="submit-btn" :disabled="loading">
+        {{ loading ? 'Inscription...' : 'S\'inscrire' }}
+      </button>
 
       <div class="footer-link">
         <p>Déjà inscrit(e) ? <router-link to="/connexion">Se connecter</router-link></p>
@@ -62,7 +66,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { authService } from '../services/api' // Ajout du service API
+import { authService } from '../services/api'
 
 const router = useRouter()
 const password = ref('')
@@ -70,49 +74,44 @@ const nom = ref('')
 const prenom = ref('')
 const dateNaissance = ref('')
 const email = ref('')
+const errorMsg = ref('')
+const loading = ref(false)
 
 const strengthScore = computed(() => {
-  if (!password.value) return 0;
-  let score = 1; // trop simple
-  if (password.value.length >= 6 && /[0-9]/.test(password.value)) score = 2; // moyen
-  if (password.value.length >= 8 && /[0-9]/.test(password.value) && /[a-zA-Z]/.test(password.value) && /[^A-Za-z0-9]/.test(password.value)) score = 3; // fort
-  return score;
+  if (!password.value) return 0
+  let score = 1
+  if (password.value.length >= 6 && /[0-9]/.test(password.value)) score = 2
+  if (password.value.length >= 8 && /[0-9]/.test(password.value) && /[a-zA-Z]/.test(password.value) && /[^A-Za-z0-9]/.test(password.value)) score = 3
+  return score
 })
 
 const strengthColor = computed(() => {
-  switch (strengthScore.value) {
-    case 1: return '#ef4444'; // rouge
-    case 2: return '#f97316'; // orange
-    case 3: return '#10b981'; // vert
-    default: return 'rgba(255, 255, 255, 0.8)'; // blanc (vide)
-  }
+  return [, '#ef4444', '#f97316', '#10b981'][strengthScore.value] || 'rgba(255,255,255,0.8)'
 })
 
 const strengthWidth = computed(() => {
-  switch (strengthScore.value) {
-    case 1: return '33%';
-    case 2: return '66%';
-    case 3: return '100%';
-    default: return '100%'; // Pleine largeur quand vide
-  }
+  return [, '33%', '66%', '100%'][strengthScore.value] || '100%'
 })
 
 const handleSubmit = async () => {
+  errorMsg.value = ''
+  loading.value = true
   try {
-    // 🔗 APPEL AU SERVICE API REGISTER
     const response = await authService.register({
       nom: nom.value,
       prenom: prenom.value,
       dateNaissance: dateNaissance.value,
       email: email.value,
       password: password.value
-    });
-
+    })
     if (response.success) {
+      localStorage.setItem('registeredUserName', `${prenom.value} ${nom.value}`)
       router.push('/dashboard')
     }
   } catch (error) {
-    console.error("Erreur inscription:", error)
+    errorMsg.value = error.message || 'Erreur lors de l\'inscription.'
+  } finally {
+    loading.value = false
   }
 }
 </script>

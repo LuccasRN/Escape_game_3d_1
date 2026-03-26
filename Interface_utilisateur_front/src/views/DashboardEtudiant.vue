@@ -66,83 +66,70 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { studentService, authService } from '../services/api'
 
 const router = useRouter()
-const userName = ref('utilisateur')
+const userName = ref('...')
+const levels = ref([])
+const loading = ref(true)
 
-onMounted(() => {
+onMounted(async () => {
   const storedName = localStorage.getItem('registeredUserName')
-  if (storedName) {
-    userName.value = storedName
+  if (storedName) userName.value = storedName
+
+  try {
+    const dashboardData = await studentService.getDashboardData()
+
+    levels.value = dashboardData.map(enigma => ({
+      title: enigma.nom,
+      subtitle: enigma.difficulte || '',
+      desc: enigma.description,
+      difficulty: enigma.difficulte,
+      difficultyClass: getDifficultyClass(enigma.difficulte),
+      iconBg: 'rgba(168, 85, 247, 0.4)',
+      iconSvg: getIconSvg(enigma.id),
+      isUnlocked: enigma.status === 'COMMENCER' || enigma.status === 'RÉUSSI',
+      isCompleted: enigma.status === 'RÉUSSI',
+      enigmaId: enigma.id,
+      route: `/enigme/${enigma.id}`
+    }))
+  } catch (error) {
+    console.error('Erreur dashboard:', error)
+    if (error.message.startsWith('401') || error.message.startsWith('403')) {
+      authService.logout()
+      router.push('/connexion')
+    }
+  } finally {
+    loading.value = false
   }
 })
 
+function getDifficultyClass(difficulte) {
+  const d = (difficulte || '').toLowerCase()
+  if (d.includes('facile')) return 'badge-easy'
+  if (d.includes('difficile') || d.includes('extreme')) return 'badge-hard'
+  return 'badge-medium'
+}
+
+function getIconSvg(id) {
+  const icons = {
+    1: '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>',
+    2: '<rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>',
+    3: '<path d="M3 14h18"></path><path d="M3 10V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4"></path>',
+    4: '<rect x="2" y="10" width="20" height="4" rx="2"></rect>',
+    5: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle>'
+  }
+  return icons[id] || icons[1]
+}
+
 const logout = () => {
-  localStorage.removeItem('registeredUserName')
+  authService.logout()
   router.push('/')
 }
 
 const goToPage = (routePath) => {
   router.push(routePath)
 }
-
-const levels = [
-  {
-    title: 'Salle de Réanimation',
-    subtitle: 'Urgence Vitale',
-    desc: 'Stabilisez le patient en analysant les constantes vitales.',
-    difficulty: 'Facile',
-    difficultyClass: 'badge-easy',
-    iconBg: 'rgba(236, 72, 153, 0.4)',
-    iconSvg: '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>',
-    isUnlocked: true,
-    route: '/salle-reanimation'
-  },
-  {
-    title: 'Bureau Médecin',
-    subtitle: 'Diagnostic Mystère',
-    desc: 'Déchiffrez le dossier médical pour trouver le diagnostic.',
-    difficulty: 'Moyen',
-    difficultyClass: 'badge-medium',
-    iconBg: 'rgba(168, 85, 247, 0.4)',
-    iconSvg: '<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>',
-    isUnlocked: false,
-    route: '/bureau-medecin'
-  },
-  {
-    title: 'Salle Patient',
-    subtitle: 'Soins Personnalisés',
-    desc: 'Administrez le traitement adapté selon les symptômes.',
-    difficulty: 'Moyen',
-    difficultyClass: 'badge-medium',
-    iconBg: 'rgba(168, 85, 247, 0.4)',
-    iconSvg: '<path d="M3 14h18"></path><path d="M3 10V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4"></path><path d="M3 10h18"></path><path d="M8 10v4"></path><path d="M16 10v4"></path>',
-    isUnlocked: false,
-    route: '/salle-patient'
-  },
-  {
-    title: 'Pharmacie',
-    subtitle: 'Code Médicament',
-    desc: 'Déverrouillez le coffre en identifiant les molécules.',
-    difficulty: 'Difficile',
-    difficultyClass: 'badge-hard',
-    iconBg: 'rgba(168, 85, 247, 0.4)',
-    iconSvg: '<rect x="2" y="10" width="20" height="4" rx="2"></rect><path d="M6 10V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"></path>',
-    isUnlocked: false,
-    route: '/pharmacie'
-  },
-  {
-    title: 'Salle de Réunion',
-    subtitle: 'Conseil Médical',
-    desc: 'Présentez votre cas devant le comité d\'experts.',
-    difficulty: 'Difficile',
-    difficultyClass: 'badge-hard',
-    iconBg: 'rgba(168, 85, 247, 0.4)',
-    iconSvg: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>',
-    isUnlocked: false,
-    route: '/salle-reunion'
-  }
-]
 </script>
 
 <style scoped>

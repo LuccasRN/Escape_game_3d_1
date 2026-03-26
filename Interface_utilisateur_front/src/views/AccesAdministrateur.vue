@@ -59,15 +59,21 @@ import { authService } from '../services/api'
 const router = useRouter()
 const email = ref('')
 const password = ref('')
+const errorMsg = ref('')
+const loading = ref(false)
 
 const handleLogin = async () => {
+  errorMsg.value = ''
+  loading.value = true
   try {
     const response = await authService.loginAdmin(email.value, password.value)
-    if(response.success) {
+    if (response.success) {
       router.push('/dashboard-admin')
     }
-  } catch(error) {
-    console.error("Erreur connexion admin:", error)
+  } catch (error) {
+    errorMsg.value = error.message || 'Accès refusé.'
+  } finally {
+    loading.value = false
   }
 }
 </script>
