@@ -8,7 +8,6 @@
         <p class="ip-label">Adresse IP du serveur :</p>
         <p class="ip-value">192.168.56.100</p>
       </div>
-      <p class="server-hint">💡 Notez cette adresse pour la connexion FTP</p>
       <button class="close-btn" @click="$emit('close')">✕</button>
     </div>
   </GameOverlay>
