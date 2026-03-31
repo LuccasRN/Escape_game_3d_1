@@ -42,6 +42,7 @@
 <script setup>
 import { ref } from 'vue'
 import GameOverlay from './GameOverlay.vue'
+import { notifyEnigmaCompleted } from '../utils/enigme-completion.js'
 
 defineProps({
   visible: { type: Boolean, default: false }
@@ -87,6 +88,9 @@ function validateAnswers() {
     localStorage.setItem('escapeGameCompleted', 'true')
     emit('completed')
     startConfetti()
+
+    // ✅ Notifier le dashboard parent
+    notifyEnigmaCompleted(true, 1)
   }
 }
 
@@ -95,7 +99,6 @@ function startConfetti() {
   const duration = 10 * 1000
   const end = Date.now() + duration
   const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffd700', '#ff6b6b', '#50ef87']
-
   ;(function frame() {
     confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors, zIndex: 10000 })
     confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors, zIndex: 10000 })

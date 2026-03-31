@@ -8,6 +8,7 @@ import DashboardAdmin from '../views/DashboardAdmin.vue'
 import AdminListeJoueurs from '../views/AdminListeJoueurs.vue'
 import AdminJoueurDetail from '../views/AdminJoueurDetail.vue'
 import StatistiquesEtudiant from '../views/StatistiquesEtudiant.vue'
+import EnigmeBridge from '../views/EnigmeBridge.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,7 +46,40 @@ const router = createRouter({
       name: 'admin-joueur-detail',
       component: AdminJoueurDetail,
       meta: { requiresAuth: true, role: 'ROLE_ADMIN' }
-    }
+    },
+
+    {
+      path: '/enigme/bureau',
+      name: 'enigme-bureau',
+      component: EnigmeBridge,
+      props: { enigmaId: 1, enigmaName: 'Bureau Médecin', enigmaPort: 5174 },
+    },
+    {
+      path: '/enigme/chambre-patient',
+      name: 'enigme-chambre-patient',
+      component: EnigmeBridge,
+      props: { enigmaId: 2, enigmaName: 'Chambre du Patient', enigmaPort: 5175 },
+    },
+    {
+      path: '/enigme/pharmacie',
+      name: 'enigme-pharmacie',
+      component: EnigmeBridge,
+      props: { enigmaId: 3, enigmaName: 'Pharmacie', enigmaPort: 5176 },
+    },
+    {
+      path: '/enigme/salle-reseau',
+      name: 'enigme-salle-reseau',
+      component: EnigmeBridge,
+      props: { enigmaId: 4, enigmaName: 'Salle Réseau', enigmaPort: 5177 },
+    },
+    {
+      path: '/enigme/salle-reunion',
+      name: 'enigme-salle-reunion',
+      component: EnigmeBridge,
+      props: { enigmaId: 5, enigmaName: 'Salle de Réunion', enigmaPort: 5178 },
+    },
+
+    
   ]
 })
 

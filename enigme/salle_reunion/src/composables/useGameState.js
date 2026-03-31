@@ -1,5 +1,6 @@
 import { reactive } from 'vue';
 import confetti from 'canvas-confetti';
+import { notifyEnigmaCompleted } from '../utils/enigme-completion.js';
 
 export const gameState = reactive({
   isStarted: true,
@@ -10,11 +11,9 @@ export const gameState = reactive({
   choiceMessage: ''
 });
 
-
 export function startGame() {
   gameState.isStarted = true;
 }
-
 
 export function openChoice() {
   gameState.showChoiceOverlay = true;
@@ -35,11 +34,7 @@ export function triggerConfetti() {
 
   const interval = setInterval(function() {
     const timeLeft = animationEnd - Date.now();
-
-    if (timeLeft <= 0) {
-      return clearInterval(interval);
-    }
-
+    if (timeLeft <= 0) return clearInterval(interval);
     const particleCount = 50 * (timeLeft / duration);
     confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
     confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
@@ -52,13 +47,18 @@ export function makeChoice(answer) {
     gameState.showChoiceOverlay = false;
     gameState.choiceMessage = 'Bonne réponse. Vous avez découvert la vérité sur la mort de Mme Calvin. Affaire classée.';
     triggerConfetti();
+
+    // ✅ Notifier le dashboard parent — succès enigme 5
+    notifyEnigmaCompleted(true, 5);
   } else {
     gameState.gameOver = true;
     gameState.showChoiceOverlay = false;
     gameState.choiceMessage = 'Mauvaise conclusion. Emma est une intelligence artificielle sous la direction du Dr Deckard... Vous vous êtes trompé de cible !';
+
+    // ✅ Notifier le dashboard parent — échec
+    notifyEnigmaCompleted(false, 5);
   }
 }
-
 
 export function useGameState() {
   return {
@@ -69,4 +69,3 @@ export function useGameState() {
     makeChoice,
   }
 }
-

@@ -35,9 +35,14 @@ public class GameService {
 
         Player player = (Player) user;
 
-        // Eviter deux sessions ouvertes en même temps
+        // Si une session est déjà ouverte, la terminer proprement
         sessionRepository.findFirstByPlayerAndDateFinIsNullOrderByDateDebutDesc(player)
-                .ifPresent(s -> { throw new RuntimeException("Une session est déjà en cours."); });
+                .ifPresent(s -> {
+                    s.setDateFin(LocalDateTime.now());
+                    long seconds = Duration.between(s.getDateDebut(), s.getDateFin()).getSeconds();
+                    s.setTempsEnLigne((int) seconds);
+                    sessionRepository.save(s);
+                });
 
         GameSession session = new GameSession();
         session.setPlayer(player);
@@ -46,11 +51,7 @@ public class GameService {
         return sessionRepository.save(session);
     }
 
-    /**
-     * Le frontend appelle ceci quand le joueur a TERMINÉ un énigme (écran "Tu as réussi").
-     * Le backend enregistre simplement la completion et le temps — pas de validation de réponse.
-     */
-    public void completeEnigma(String email, PuzzleSubmissionDTO request) {
+    public boolean validatePuzzle(String email, PuzzleSubmissionDTO request) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
@@ -58,38 +59,57 @@ public class GameService {
                 .findFirstByPlayerAndDateFinIsNullOrderByDateDebutDesc((Player) user)
                 .orElseThrow(() -> new RuntimeException("Aucune session active trouvée."));
 
-        Enigma enigma = enigmaRepository.findById(request.getEnigmaId())
+        Long enigmaId;
+        try {
+            enigmaId = Long.parseLong(request.getPuzzleId());
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("ID d'énigme invalide: " + request.getPuzzleId());
+        }
+
+        Enigma enigma = enigmaRepository.findById(enigmaId)
                 .orElseThrow(() -> new RuntimeException("Énigme non trouvée."));
 
-        // Vérifier que cet énigme n'a pas déjà été complété dans cette session
-        boolean alreadyCompleted = attemptRepository
-                .findBySession(session)
-                .stream()
-                .anyMatch(a -> a.getEnigma().getId_enigme().equals(enigma.getId_enigme())
-                        && Boolean.TRUE.equals(a.getEstReussi()));
+        // La réponse peut être "SUCCESS" (envoyée par le front après validation in-game)
+        // ou la réponse réelle à comparer
+        boolean isCorrect;
+        String answer = request.getAnswer();
 
-        if (alreadyCompleted) {
-            throw new RuntimeException("Cet énigme a déjà été complété.");
+        if ("SUCCESS".equalsIgnoreCase(answer)) {
+            // Le front a déjà validé la réponse dans l'enigme, on fait confiance
+            isCorrect = true;
+        } else if ("FAIL".equalsIgnoreCase(answer)) {
+            isCorrect = false;
+        } else {
+            // Vérification classique de la réponse
+            isCorrect = enigma.getReponseAttendue() != null &&
+                        enigma.getReponseAttendue().equalsIgnoreCase(answer);
         }
+
+        // Calculer le temps passé depuis le début de la session
+        int tempsPasseSec = (int) Duration.between(session.getDateDebut(), LocalDateTime.now()).getSeconds();
 
         PuzzleAttempt attempt = new PuzzleAttempt();
         attempt.setSession(session);
         attempt.setEnigma(enigma);
-        attempt.setEstReussi(true); // Toujours true — le frontend n'appelle ceci qu'à la fin
-        attempt.setTempsPasseSec(request.getTempsPasseSec());
-
+        attempt.setEstReussi(isCorrect);
+        attempt.setScoreFinal(isCorrect ? 100 : 0);
+        attempt.setTempsPasseSec(tempsPasseSec);
         attemptRepository.save(attempt);
+
+        return isCorrect;
     }
 
     public GameSession endGame(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
+        // Si pas de session active, retourner la dernière session (déjà terminée)
         GameSession session = sessionRepository
                 .findFirstByPlayerAndDateFinIsNullOrderByDateDebutDesc((Player) user)
                 .orElseThrow(() -> new RuntimeException("Aucune session active trouvée."));
 
         session.setDateFin(LocalDateTime.now());
+
         long seconds = Duration.between(session.getDateDebut(), session.getDateFin()).getSeconds();
         session.setTempsEnLigne((int) seconds);
 

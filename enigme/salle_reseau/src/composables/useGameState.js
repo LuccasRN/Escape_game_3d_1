@@ -1,13 +1,12 @@
 import { ref, computed } from 'vue'
 import confetti from 'canvas-confetti'
+import { notifyEnigmaCompleted } from '../utils/enigme-completion.js'
 
 export function useGameState() {
   const isWifiConnected = ref(false)
   const isSafeOpened = ref(false)
   const notification = ref(null)
   const gamePassed = ref(false)
-
-  const wifiPassword = "Cyber_Route_2077"
 
   const showOS = ref(false)
   const activeWindow = ref(null)
@@ -21,18 +20,12 @@ export function useGameState() {
     return ""
   })
 
-  function openWindow(win) {
-    activeWindow.value = win
-  }
-
-  function closeWindow() {
-    activeWindow.value = null
-  }
+  function openWindow(win) { activeWindow.value = win }
+  function closeWindow() { activeWindow.value = null }
 
   const showSafeLock = ref(false)
   const safeCode = ref("")
   const safeInput = ref("")
-
 
   function triggerConfetti() {
     const duration = 5 * 1000
@@ -45,11 +38,7 @@ export function useGameState() {
 
     const interval = setInterval(function() {
       const timeLeft = animationEnd - Date.now()
-
-      if (timeLeft <= 0) {
-        return clearInterval(interval)
-      }
-
+      if (timeLeft <= 0) return clearInterval(interval)
       const particleCount = 50 * (timeLeft / duration)
       confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }))
       confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }))
@@ -58,26 +47,21 @@ export function useGameState() {
 
   function showNotif(msg, time = 4000) {
     notification.value = msg
-    setTimeout(() => {
-      notification.value = null
-    }, time)
+    setTimeout(() => { notification.value = null }, time)
   }
 
   function initSafe() {
     safeCode.value = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
   }
-
   initSafe()
 
   function handleWifiConnected() {
     if (isWifiConnected.value) return
     isWifiConnected.value = true
-    showNotif('<strong>Routeur connect\u00e9.</strong>', 6000)
+    showNotif('<strong>Routeur connecté.</strong>', 6000)
   }
 
-  function handleMonitorClick() {
-    showOS.value = true
-  }
+  function handleMonitorClick() { showOS.value = true }
 
   const showAutopsyReport = ref(false)
   const answer1 = ref("")
@@ -88,8 +72,6 @@ export function useGameState() {
     const ans2 = answer2.value.toLowerCase().trim()
 
     const q1Correct = ans1.includes("allergique") && ans1.includes("cortisone")
-    const q2Correct = ans1 === "réaction allergique à la cortisone" || q1Correct
-
     const q3Correct = ans2.includes("bactérienne") && (ans2.includes("pneumopathie") || ans2.includes("pneumonie"))
 
     if (q1Correct && q3Correct) {
@@ -97,6 +79,9 @@ export function useGameState() {
       triggerConfetti()
       closeWindow()
       showOS.value = false
+
+      // ✅ Notifier le dashboard parent — succès enigme 4
+      notifyEnigmaCompleted(true, 4)
     } else {
       showNotif("Réponse(s) incorrecte(s). Veuillez vérifier le rapport d'autopsie.", 3000)
     }
@@ -112,14 +97,10 @@ export function useGameState() {
   }
 
   function pressPad(num) {
-    if (safeInput.value.length < 4) {
-      safeInput.value += num.toString()
-    }
+    if (safeInput.value.length < 4) safeInput.value += num.toString()
   }
 
-  function clearPad() {
-    safeInput.value = ""
-  }
+  function clearPad() { safeInput.value = "" }
 
   function checkSafeCode() {
     if (safeInput.value === safeCode.value) {
@@ -133,29 +114,12 @@ export function useGameState() {
   }
 
   return {
-    isWifiConnected,
-    isSafeOpened,
-    notification,
-    gamePassed,
-    showOS,
-    activeWindow,
-    activeWindowTitle,
-    showSafeLock,
-    safeCode,
-    safeInput,
-    showAutopsyReport,
-    answer1,
-    answer2,
-    openWindow,
-    closeWindow,
-    showNotif,
-    handleWifiConnected,
-    handleMonitorClick,
-    handleSafeClick,
-    checkAnswers,
-    pressPad,
-    clearPad,
-    checkSafeCode,
-    triggerConfetti
+    isWifiConnected, isSafeOpened, notification, gamePassed,
+    showOS, activeWindow, activeWindowTitle,
+    showSafeLock, safeCode, safeInput,
+    showAutopsyReport, answer1, answer2,
+    openWindow, closeWindow, showNotif,
+    handleWifiConnected, handleMonitorClick, handleSafeClick,
+    checkAnswers, pressPad, clearPad, checkSafeCode, triggerConfetti,
   }
 }
