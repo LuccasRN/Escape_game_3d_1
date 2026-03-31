@@ -1,6 +1,6 @@
 import { reactive } from 'vue';
 import confetti from 'canvas-confetti';
-import { notifyEnigmaCompleted } from '../utils/enigme-completion.js';
+import { notifyEnigmaCompleted } from '../../../../Interface_utilisateur_front/src/utils/enigme-completion';
 
 export const gameState = reactive({
   isStarted: true,
