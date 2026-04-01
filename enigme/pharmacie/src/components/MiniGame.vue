@@ -27,8 +27,8 @@ import { loadImage, SpriteAnimation } from '../composables/useSpriteEngine.vue'
 const emit = defineEmits(['victory', 'close'])
 
 // Constantes
-const CANVAS_W = 800
-const CANVAS_H = 450
+const CANVAS_W = 1000
+const CANVAS_H = 560
 const GRAVITY = 0.6
 const GROUND_Y = CANVAS_H - 40
 const SCALE_BEAR = 4
@@ -98,10 +98,10 @@ const ATTACK_FRAME_DURATION = 70 // ms per frame
 
 // Platforms
 const platforms = [
-  { x: 0, y: GROUND_Y, w: CANVAS_W, h: 40 },       // ground
-  { x: 120, y: 320, w: 160, h: 16 },                 // left platform
-  { x: 500, y: 280, w: 180, h: 16 },                 // right platform
-  { x: 300, y: 200, w: 140, h: 16 },                 // top center
+  { x: 0, y: GROUND_Y, w: CANVAS_W, h: 40 },
+  { x: 100, y: 410, w: 180, h: 16 },
+  { x: 620, y: 390, w: 200, h: 16 },
+  { x: 370, y: 290, w: 160, h: 16 },
 ]
 
 // Player state
@@ -117,7 +117,7 @@ const player = {
 
 // Boss state
 const boss = {
-  x: 600, y: GROUND_Y, vx: 0, vy: 0,
+  x: 750, y: GROUND_Y, vx: 0, vy: 0,
   w: 40 * SCALE_PENGU, h: 45 * SCALE_PENGU,
   onGround: false, facingRight: false,
   hp: 20, maxHp: 20,
@@ -308,27 +308,52 @@ function updateBoss(dt) {
       boss.stateTimer -= dt
       penguHurt.update(dt)
       if (penguHurt.finished || boss.stateTimer <= 0) {
-        boss.state = 'idle'
-        boss.stateTimer = 300
-        boss.attackCooldown = 400
         penguHurt.reset()
+        const distAfterHurt = Math.abs(player.x - boss.x)
+        const nearWall = boss.x < 80 || boss.x > CANVAS_W - 80
+        if (nearWall) {
+          boss.state = 'escape'
+          boss.stateTimer = 600
+          penguMove.reset()
+          boss.attackCooldown = 200
+        } else if (distAfterHurt < 130) {
+          boss.state = 'attack_peck'
+          boss.stateTimer = 700
+          penguPeck.reset()
+          boss.attackCooldown = 400
+        } else {
+          boss.state = 'attack_ice'
+          boss.stateTimer = 1000
+          penguIce.reset()
+          boss._iceSpawned = false
+          boss.attackCooldown = 400
+        }
       }
       break
 
     case 'idle':
       boss.stateTimer -= dt
       penguIdle.update(dt)
-      boss.facingRight = player.x > boss.x
+      if (Math.abs(player.x - boss.x) > 3) boss.facingRight = player.x > boss.x
+
+      // Escape corner while idle
+      if (boss.x < 80 || boss.x > CANVAS_W - 80) {
+        boss.state = 'escape'
+        boss.stateTimer = 500
+        penguMove.reset()
+        break
+      }
 
       if (boss.stateTimer <= 0 && boss.attackCooldown <= 0) {
-        const dist = Math.abs(player.x - boss.x)
+        const distX = Math.abs(player.x - boss.x)
+        const distY = Math.abs(player.y - boss.y)
 
         if (boss.phase === 1) {
           boss.state = 'walk'
           boss.stateTimer = 2000
           penguMove.reset()
         } else if (boss.phase === 2) {
-          if (dist < 120) {
+          if (distX < 120 && distY <= 40) {
             boss.state = 'attack_peck'
             boss.stateTimer = 800
             penguPeck.reset()
@@ -338,7 +363,6 @@ function updateBoss(dt) {
             penguIce.reset()
           }
         } else {
-          // Phase 3
           const r = Math.random()
           if (r < 0.4) {
             boss.state = 'attack_ray'
@@ -357,18 +381,45 @@ function updateBoss(dt) {
       }
       break
 
+    case 'escape': {
+      boss.stateTimer -= dt
+      penguMove.update(dt)
+      const center = CANVAS_W / 2
+      const escDir = boss.x < center ? 1 : -1
+      boss.facingRight = escDir > 0
+      boss.x += escDir * 4
+      boss.vy += GRAVITY
+      boss.y += boss.vy
+      if (boss.onGround && boss.stateTimer > 300) {
+        boss.vy = -10
+      }
+      resolveplatformCollisions(boss)
+      if (boss.stateTimer <= 0 || (Math.abs(boss.x - center) < 100)) {
+        boss.state = 'idle'
+        boss.stateTimer = 200
+        boss.attackCooldown = 300
+      }
+      break
+    }
+
     case 'walk': {
       boss.stateTimer -= dt
       penguMove.update(dt)
-      const dir = player.x > boss.x ? 1 : -1
-      boss.facingRight = dir > 0
+      let dir = 0
+      if (player.x > boss.x + 3) dir = 1
+      else if (player.x < boss.x - 3) dir = -1
+      
+      if (dir !== 0) boss.facingRight = dir > 0
+      
       boss.x += dir * 2.5
       boss.vy += GRAVITY
       boss.y += boss.vy
       resolveplatformCollisions(boss)
 
-      const dist = Math.abs(player.x - boss.x)
-      if (dist < 100 && boss.phase >= 1) {
+      const distX = Math.abs(player.x - boss.x)
+      const distY = Math.abs(player.y - boss.y)
+      
+      if (distX < 100 && distY <= 40 && boss.phase >= 1) {
         boss.state = 'attack_peck'
         boss.stateTimer = 700
         penguPeck.reset()
@@ -383,7 +434,7 @@ function updateBoss(dt) {
     case 'attack_peck':
       boss.stateTimer -= dt
       penguPeck.update(dt)
-      boss.facingRight = player.x > boss.x
+      if (Math.abs(player.x - boss.x) > 3) boss.facingRight = player.x > boss.x
 
       // Deal damage mid-animation
       if (penguPeck.currentFrame >= 4 && penguPeck.currentFrame <= 5) {
@@ -461,10 +512,22 @@ function updateBoss(dt) {
       break
   }
 
-  // Boss gravity (non-walk states)
-  if (boss.state !== 'walk') {
+  // Boss gravity & velocity (non-walk states)
+  if (boss.state !== 'walk' && boss.state !== 'escape') {
     boss.vy += GRAVITY
     boss.y += boss.vy
+    
+    if (boss.vx !== 0) {
+      boss.x += boss.vx
+      if (boss.vx > 0) {
+        boss.vx -= 0.3
+        if (boss.vx < 0) boss.vx = 0
+      } else {
+        boss.vx += 0.3
+        if (boss.vx > 0) boss.vx = 0
+      }
+    }
+    
     resolveplatformCollisions(boss)
   }
 
@@ -532,12 +595,12 @@ function damageBoss(amount) {
     boss.state = 'hurt'
     boss.stateTimer = 500
     boss.invincible = true
-    boss.invTimer = 1500
-    // Knockback away from player
+    boss.invTimer = 1200
+    
     const knockDir = player.x < boss.x ? 1 : -1
-    boss.x += knockDir * 60
-    if (boss.x < boss.w / 2) boss.x = boss.w / 2
-    if (boss.x > CANVAS_W - boss.w / 2) boss.x = CANVAS_W - boss.w / 2
+    boss.vx = knockDir * 8
+    boss.vy = -8
+    
     penguHurt.reset()
   }
 }
@@ -596,6 +659,7 @@ function render(ctx) {
     switch (boss.state) {
       case 'hurt': bossSprite = penguHurt; break
       case 'walk': bossSprite = penguMove; break
+      case 'escape': bossSprite = penguMove; break
       case 'attack_peck': bossSprite = penguPeck; break
       case 'attack_ice': bossSprite = penguIce; break
       case 'attack_ray': bossSprite = penguRay; break
@@ -745,7 +809,7 @@ function resetState() {
   player.hurtTimer = 0
   player.facingRight = true
 
-  boss.x = 600
+  boss.x = 750
   boss.y = GROUND_Y
   boss.vx = 0
   boss.vy = 0
@@ -812,7 +876,7 @@ onUnmounted(() => {
 .minigame-overlay {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 10000;
   background: rgba(0, 0, 0, 0.92);
   display: flex;
   align-items: center;
@@ -822,7 +886,8 @@ onUnmounted(() => {
 .minigame-close {
   position: absolute;
   top: 16px;
-  right: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #fff;
@@ -831,7 +896,7 @@ onUnmounted(() => {
   height: 40px;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 10;
+  z-index: 10001;
   transition: background 0.2s;
 }
 .minigame-close:hover {

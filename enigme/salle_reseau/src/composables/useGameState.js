@@ -3,10 +3,25 @@ import confetti from 'canvas-confetti'
 import { notifyEnigmaCompleted } from '../../../../Interface_utilisateur_front/src/utils/enigme-completion'
 
 export function useGameState() {
+  const showIntro = ref(true)
   const isWifiConnected = ref(false)
   const isSafeOpened = ref(false)
   const notification = ref(null)
   const gamePassed = ref(false)
+  const routerHintActive = ref(false)
+
+  function handleHintShown(hint) {
+    if (hint === 'Rallume le routeur') {
+      routerHintActive.value = true
+      setTimeout(() => {
+        routerHintActive.value = false
+      }, 5000)
+    }
+  }
+
+  function finishIntro() {
+    showIntro.value = false
+  }
 
   const showOS = ref(false)
   const activeWindow = ref(null)
@@ -114,12 +129,14 @@ export function useGameState() {
   }
 
   return {
+    showIntro, finishIntro,
     isWifiConnected, isSafeOpened, notification, gamePassed,
+    routerHintActive,
     showOS, activeWindow, activeWindowTitle,
     showSafeLock, safeCode, safeInput,
     showAutopsyReport, answer1, answer2,
     openWindow, closeWindow, showNotif,
-    handleWifiConnected, handleMonitorClick, handleSafeClick,
+    handleWifiConnected, handleMonitorClick, handleSafeClick, handleHintShown,
     checkAnswers, pressPad, clearPad, checkSafeCode, triggerConfetti,
   }
 }

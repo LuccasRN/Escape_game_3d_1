@@ -29,28 +29,20 @@
       </div>
     </div>
 
-    <!-- Boutons d'accès rapide -->
-    <div class="quick-access">
-      <div class="qa-label">INTERACTION OBJETS</div>
-      <button class="qa-btn" :disabled="unlockedPlaquesCount() === 0" @click="openPlaquesFromQuickAccess">
-        <span class="btn-status">{{ unlockedPlaquesCount() > 0 ? '✓' : '×' }}</span>
-        <span class="btn-text">Dossiers Médicaux</span>
-      </button>
-      <button class="qa-btn" :disabled="!discoveredBox" @click="showCodeBox = true">
-        <span class="btn-status">{{ discoveredBox ? '✓' : '×' }}</span>
-        <span class="btn-text">Unité de Stockage</span>
-      </button>
-      <button class="qa-btn" :disabled="!discoveredComputer" @click="showComputer = true">
-        <span class="btn-status">{{ discoveredComputer ? '✓' : '×' }}</span>
-        <span class="btn-text">PC de Diagnostic</span>
-      </button>
-    </div>
+    <!-- Document inventory -->
+    <DocumentInventory
+      :documents="inventoryDocs"
+      :z-index="150"
+      @open-document="openDocFromInventory"
+    />
 
   </div>
 </template>
 
 <script setup>
+import { computed, ref, watch } from 'vue'
 import { useGameState } from '@/composables/useGameState.js'
+import DocumentInventory from '../../../DocumentInventory.vue'
 
 const {
   boxUnlocked,
@@ -58,6 +50,7 @@ const {
   showComputer,
   showCodeBox,
   showPlaquette,
+  showPathHint,
   currentPlaqueIndex,
   discoveredComputer,
   discoveredBox,
@@ -65,27 +58,45 @@ const {
   unlockedPlaquesCount,
 } = useGameState()
 
-function openPlaquesFromQuickAccess() {
-  const firstUnlocked = unlockedPlaques.findIndex(Boolean)
-  if (firstUnlocked < 0) return
-  currentPlaqueIndex.value = firstUnlocked
-  showPlaquette.value = true
+const pathHintSeen = ref(false)
+
+watch(showPathHint, (v) => { if (v) pathHintSeen.value = true })
+
+const inventoryDocs = computed(() => [
+  { id: 'plaques', label: 'Dossiers médicaux', sub: `${unlockedPlaquesCount()} / 4 fiches trouvées`, icon: 'doc', discovered: unlockedPlaquesCount() > 0 },
+  { id: 'codebox', label: 'Unité de stockage', sub: boxUnlocked.value ? 'Déverrouillé' : 'Code requis', icon: 'key', discovered: discoveredBox.value },
+  { id: 'pathhint', label: 'Schéma neuronal', sub: 'Croquis D. Deckard', icon: 'note', discovered: pathHintSeen.value },
+  { id: 'computer', label: 'PC de diagnostic', sub: computerCompleted.value ? 'Terminé' : 'Calibration requise', icon: 'pc', discovered: discoveredComputer.value },
+])
+
+function openDocFromInventory(id) {
+  if (id === 'plaques') {
+    const firstUnlocked = unlockedPlaques.findIndex(Boolean)
+    if (firstUnlocked < 0) return
+    currentPlaqueIndex.value = firstUnlocked
+    showPlaquette.value = true
+  } else if (id === 'codebox') {
+    showCodeBox.value = true
+  } else if (id === 'computer') {
+    showComputer.value = true
+  } else if (id === 'pathhint') {
+    showPathHint.value = true
+  }
 }
 </script>
 
 <style scoped>
 .game-ui {
-  position: fixed;
-  top: 24px;
-  left: 24px;
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
   pointer-events: none;
 }
 
 .progress-panel {
+  position: fixed;
+  top: 90px;
+  left: 20px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
   background: rgba(15, 23, 42, 0.9);
   border-left: 4px solid #38bdf8;
   padding: 16px 20px;
@@ -143,58 +154,5 @@ function openPlaquesFromQuickAccess() {
   margin-left: 18px;
   display: block;
   margin-top: 2px;
-}
-
-.quick-access {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  pointer-events: all;
-}
-
-.qa-label {
-  font-size: 0.6rem;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.4);
-  letter-spacing: 0.1em;
-  margin-bottom: 4px;
-}
-
-.qa-btn {
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #f1f5f9;
-  font-family: inherit;
-  font-size: 0.7rem;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.2s;
-  width: 180px;
-}
-.qa-btn:hover:not(:disabled) {
-  background: #1e293b;
-  border-color: #38bdf8;
-}
-
-.qa-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  filter: grayscale(1);
-}
-
-.btn-status {
-  font-weight: 900;
-  width: 14px;
-  color: #38bdf8;
-}
-.qa-btn:disabled .btn-status { color: #64748b; }
-
-.btn-text {
-  font-weight: 600;
-  letter-spacing: 0.025em;
 }
 </style>

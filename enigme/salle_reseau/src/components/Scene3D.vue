@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="scene-wrapper">
     <div ref="container" class="scene-container"></div>
     <CapybaraLoader v-if="isLoading" :progress="loadingProgress" />
@@ -16,6 +16,10 @@ const props = defineProps({
     default: false
   },
   safeOpened: {
+    type: Boolean,
+    default: false
+  },
+  routerHintActive: {
     type: Boolean,
     default: false
   }

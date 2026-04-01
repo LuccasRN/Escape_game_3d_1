@@ -1,15 +1,25 @@
 <template>
   <div id="app">
-    <Scene3D
-      :wifiConnected="isWifiConnected"
-      :safeOpened="isSafeOpened"
-      @onWifiConnected="handleWifiConnected"
-      @onMonitorClick="handleMonitorClick"
-      @onSafeClick="handleSafeClick"
-    />
+    <IntroScreen v-if="showIntro" @finish="finishIntro" />
 
-    <HintSystem :hints="['Rallume le routeur', 'Fouille dans les fichiers du pc', 'Assemble les indices pour completer le questionnaire']" />
-    <GameTimer v-if="!gamePassed" />
+    <template v-else>
+      <Scene3D
+        :wifiConnected="isWifiConnected"
+        :safeOpened="isSafeOpened"
+        :routerHintActive="routerHintActive"
+        @onWifiConnected="handleWifiConnected"
+        @onMonitorClick="handleMonitorClick"
+        @onSafeClick="handleSafeClick"
+      />
+
+      <HintSystem :hints="['Rallume le routeur', 'Fouille dans les fichiers du pc', 'Assemble les indices pour completer le questionnaire']" @hint-shown="handleHintShown" />
+      <GameTimer v-if="!gamePassed" />
+
+      <DocumentInventory
+        :documents="inventoryDocs"
+        :z-index="100"
+        @open-document="openDocFromInventory"
+      />
 
     <NotificationOverlay :notification="notification" />
 
@@ -39,18 +49,21 @@
       @cancel="showSafeLock = false"
     />
 
-    <AutopsyReport
-      v-if="showAutopsyReport"
-      @close="showAutopsyReport = false"
-    />
+      <AutopsyReport
+        v-if="showAutopsyReport"
+        @close="showAutopsyReport = false"
+      />
 
-    <VictoryScreen
-      v-if="gamePassed"
-    />
+      <VictoryScreen
+        v-if="gamePassed"
+      />
+    </template>
   </div>
 </template>
 
 <script setup>
+import { ref, computed, watch } from 'vue'
+import IntroScreen from './components/IntroScreen.vue'
 import Scene3D from './components/Scene3D.vue'
 import GameTimer from './components/GameTimer.vue'
 import HintSystem from './components/HintSystem.vue'
@@ -59,13 +72,17 @@ import OsDesktop from './components/OsDesktop.vue'
 import SafePadlock from './components/SafePadlock.vue'
 import AutopsyReport from './components/AutopsyReport.vue'
 import VictoryScreen from './components/VictoryScreen.vue'
+import DocumentInventory from '../../DocumentInventory.vue'
 import { useGameState } from './composables/useGameState.js'
 
 const {
+  showIntro,
+  finishIntro,
   isWifiConnected,
   isSafeOpened,
   notification,
   gamePassed,
+  routerHintActive,
   showOS,
   activeWindow,
   activeWindowTitle,
@@ -80,11 +97,32 @@ const {
   handleWifiConnected,
   handleMonitorClick,
   handleSafeClick,
+  handleHintShown,
   checkAnswers,
   pressPad,
   clearPad,
   checkSafeCode
 } = useGameState()
+
+const discoveredSecretFile = ref(false)
+
+watch(activeWindow, (win) => {
+  if (win === 'secret_file') discoveredSecretFile.value = true
+})
+
+const inventoryDocs = computed(() => [
+  { id: 'secret', label: 'Code coffre-fort', sub: 'Fichier réseau sécurisé', icon: 'key', discovered: discoveredSecretFile.value },
+  { id: 'autopsy', label: 'Rapport d\'autopsie', sub: 'Mme Calvin — Dr Goureau', icon: 'doc', discovered: isSafeOpened.value },
+])
+
+function openDocFromInventory(id) {
+  if (id === 'autopsy') {
+    showAutopsyReport.value = true
+  } else if (id === 'secret') {
+    showOS.value = true
+    openWindow('secret_file')
+  }
+}
 </script>
 
 <style>

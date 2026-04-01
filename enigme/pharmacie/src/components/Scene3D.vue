@@ -27,6 +27,7 @@ const {
   currentMedicineName,
   gameCompleted,
   discoverClue,
+  discoveredClues,
 } = useGameState()
 
 // Variables Three.js
@@ -167,7 +168,11 @@ function onClick() {
     isComputerUIOpen.value = true
     discoverClue('computer')
   } else if (name.startsWith('bear_doll')) {
-    showMiniGame.value = true
+    if (discoveredClues.includes('bear')) {
+      showBearInfo.value = true
+    } else {
+      showMiniGame.value = true
+    }
   } else if (name.startsWith('box_of_medicine')) {
     currentMedicineName.value = hits[0].object.name
     showMedicineInfo.value = true

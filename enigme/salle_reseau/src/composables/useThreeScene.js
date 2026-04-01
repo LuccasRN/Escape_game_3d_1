@@ -239,6 +239,23 @@ export function useThreeScene(container, props, emit) {
 
   const animate = () => {
     reqId = requestAnimationFrame(animate)
+
+    if (wifiMesh && wifiMesh.material) {
+      if (props.wifiConnected) {
+        wifiMesh.material.emissive.setHex(0x00ff00)
+        wifiMesh.material.emissiveIntensity = 1.0
+      } else if (props.routerHintActive && orbitControls && orbitControls.enabled) {
+        const time = performance.now() * 0.005
+        wifiMesh.material.emissive.setHex(0xffaa00)
+        wifiMesh.material.emissiveIntensity = 0.2 + Math.abs(Math.sin(time)) * 0.8
+      } else if (orbitControls && orbitControls.enabled) {
+        wifiMesh.material.emissive.setHex(0x000000)
+        wifiMesh.material.emissiveIntensity = 0.0
+      } else if (orbitControls && !orbitControls.enabled) {
+        wifiMesh.material.emissive.setHex(0xffffff)
+      }
+    }
+
     if (orbitControls) orbitControls.update()
     if (composer) {
       composer.render()

@@ -54,7 +54,7 @@
         <span style="font-family: 'Brush Script MT', cursive; font-size: 1.5rem;">Dr T. Goureau</span>
       </div>
     </div>
-    <button class="close-btn-safe" @click="$emit('close')">Remettre dans le coffre</button>
+    <button class="close-btn-report" @click="$emit('close')">&times;</button>
   </div>
 </template>
 
@@ -99,5 +99,13 @@ defineEmits(['close'])
 .signature {
   margin-top: 50px; text-align: right; margin-right: 50px; font-weight: bold;
 }
-.close-btn-safe { background: #d32f2f; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; font-weight: bold; width: 100%; }
+.close-btn-report {
+  position: absolute; top: 10px; right: 10px;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: none; background: rgba(0,0,0,0.5); color: white;
+  font-size: 22px; cursor: pointer; z-index: 5;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.close-btn-report:hover { background: rgba(0,0,0,0.8); }
 </style>

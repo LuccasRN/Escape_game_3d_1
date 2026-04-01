@@ -1,35 +1,72 @@
 <template>
   <div class="game-ui-overlay">
+    <!-- Inventory -->
+    <div v-if="discoveredClues.length > 0" class="inventory-area">
+      <button class="inventory-toggle" @click="inventoryOpen = !inventoryOpen" :class="{ open: inventoryOpen }">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Documents ({{ discoveredClues.filter(c => c === 'bear' || c === 'tables').length }})</span>
+      </button>
+      <transition name="inv-slide">
+        <div v-if="inventoryOpen" class="inventory-panel">
+          <div v-if="discoveredClues.includes('bear')" class="inv-item" @click="showBearInfo = true; inventoryOpen = false">
+            <div class="inv-icon note">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+            </div>
+            <div class="inv-text">
+              <div class="inv-label">Note de l'inspecteur</div>
+              <div class="inv-sub">Code terminal + indices</div>
+            </div>
+          </div>
+          <div v-if="discoveredClues.includes('tables')" class="inv-item" @click="showTablesModal = true; inventoryOpen = false">
+            <div class="inv-icon doc">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+            </div>
+            <div class="inv-text">
+              <div class="inv-label">Registre pharmaceutique</div>
+              <div class="inv-sub">Tables de référence</div>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </div>
+
     <div class="hint-bar">
       <span>Explorez la pharmacie</span>
     </div>
 
     <!-- Bear info modal -->
-    <div v-if="showBearInfo" class="modal-overlay" @click.self="showBearInfo = false">
+    <div v-if="showBearInfo" class="modal-overlay" style="z-index: 320;" @click.self="showBearInfo = false">
       <div class="modal bear-modal">
-        <button class="modal-close" @click="showBearInfo = false">✕</button>
-        <h2>Papier trouvé dans la peluche</h2>
+        <button class="modal-close" @click="showBearInfo = false">&times;</button>
         <div class="note-paper">
-          <div class="note-code">CODE TERMINAL : 4719</div>
+          <div class="note-fold"></div>
+          <div class="note-header">Note manuscrite</div>
+          <div class="note-divider"></div>
+          <div class="note-code">CODE TERMINAL&ensp;:&ensp;{{ terminalCode.split('').join(' ') }}</div>
+          <div class="note-divider"></div>
           <div class="note-body">
-            <p><em>Notes de l'inspecteur Marchand :</em></p>
+            <p class="note-author">Insp. Marchand — notes personnelles</p>
             <p>Le Dr Deckard a traité un patient pour une pathologie hivernale courante (code <strong>J1_</strong>). Deux traitements étaient possibles — un <strong>AINS</strong> et un <strong>non-AINS</strong>. Vérifier la table de prescriptions.</p>
             <p>L'affaire Calvin est plus grave. Elle souffrait d'une infection pulmonaire bactérienne (code <strong>J15._</strong>). Le traitement administré n'était <strong>PAS</strong> le bon. Quel médicament de première intention aurait dû être utilisé ?</p>
-            <p class="note-footer">Trouver les réponses. Les saisir dans le terminal.</p>
+            <p class="note-footer">— Trouver les réponses. Les saisir dans le terminal.</p>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Tables modal -->
-    <div v-if="showTablesModal" class="modal-overlay" @click.self="showTablesModal = false">
+    <div v-if="showTablesModal" class="modal-overlay" style="z-index: 320;" @click.self="showTablesModal = false">
       <div class="modal tables-modal">
-        <button class="modal-close" @click="showTablesModal = false">✕</button>
-        <h2>Documents trouvés sur le bureau</h2>
+        <button class="modal-close" @click="showTablesModal = false">&times;</button>
+        <div class="doc-header">
+          <div class="doc-stamp">CONFIDENTIEL</div>
+          <h2>Registre pharmaceutique</h2>
+          <p class="doc-sub">Documents récupérés sur le bureau du dispensaire</p>
+        </div>
         <div class="table-section">
-          <h3>PATHOLOGIES_REF</h3>
+          <h3>Pathologies — Référentiel</h3>
           <table>
-            <thead><tr><th>Code CIM-10</th><th>Nom</th></tr></thead>
+            <thead><tr><th>Code CIM-10</th><th>Pathologie</th></tr></thead>
             <tbody>
               <tr><td>J06.9</td><td>Infection aiguë des voies respiratoires</td></tr>
               <tr><td>J10</td><td>Grippe</td></tr>
@@ -41,7 +78,7 @@
           </table>
         </div>
         <div class="table-section">
-          <h3>PRESCRIPTION_STANDARD</h3>
+          <h3>Prescriptions standards</h3>
           <table>
             <thead><tr><th>Code CIM-10</th><th>Alternative</th><th>Code Médicament</th></tr></thead>
             <tbody>
@@ -57,7 +94,7 @@
           </table>
         </div>
         <div class="table-section">
-          <h3>MEDICAMENTS_SPECIALITES</h3>
+          <h3>Spécialités médicamenteuses</h3>
           <table>
             <thead><tr><th>Code</th><th>DCI</th><th>Classe thérapeutique</th></tr></thead>
             <tbody>
@@ -78,7 +115,10 @@
     <!-- Medicine info modal -->
     <div v-if="showMedicineInfo" class="modal-overlay" @click.self="showMedicineInfo = false">
       <div class="modal medicine-modal">
-        <button class="modal-close" @click="showMedicineInfo = false">✕</button>
+        <button class="modal-close" @click="showMedicineInfo = false">&times;</button>
+        <div class="med-icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="12" rx="2"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
+        </div>
         <h2>Boîte de médicament</h2>
         <p class="medicine-name">{{ currentMedicineName }}</p>
         <p class="medicine-hint">L'étiquette est partiellement illisible. Consultez les documents de référence pour identifier le contenu exact de chaque boîte.</p>
@@ -88,68 +128,79 @@
     <!-- Computer terminal modal -->
     <div v-if="isComputerUIOpen" class="modal-overlay" @click.self="isComputerUIOpen = false">
       <div class="modal computer-modal">
-        <button class="modal-close" @click="isComputerUIOpen = false">✕</button>
+        <button class="modal-close" @click="isComputerUIOpen = false">&times;</button>
 
         <div v-if="!isComputerUnlocked" class="lock-screen">
-          <div class="lock-icon">Verrouillé</div>
-          <h2>Terminal Médical — Accès Restreint</h2>
-          <p class="lock-instruction">Saisissez le code d'accès à 4 chiffres</p>
+          <svg class="lock-svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+          <h2>Terminal Médical</h2>
+          <p class="lock-sub">Accès restreint — Saisissez le code à 4 chiffres</p>
           <div class="code-entry">
-            <input v-model="codeInput" type="text" maxlength="4" placeholder="_ _ _ _" class="code-input" @keyup.enter="tryUnlock" />
-            <button class="btn-unlock" @click="tryUnlock">Déverrouiller</button>
+            <input v-model="codeInput" type="text" maxlength="4" placeholder="····" class="code-input" @keyup.enter="tryUnlock" />
+            <button class="btn-unlock" @click="tryUnlock">Entrer</button>
           </div>
           <p v-if="codeError" class="code-error">{{ codeError }}</p>
         </div>
 
-        <div v-else>
+        <div v-else class="terminal-unlocked">
+          <div class="terminal-bar">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-title">Terminal — Hôpital St-Michel</span>
+          </div>
           <div class="computer-tabs">
-            <button :class="['tab-btn', { active: activeTab === 'dossiers' }]" @click="activeTab = 'dossiers'">Dossiers Patients</button>
+            <button :class="['tab-btn', { active: activeTab === 'dossiers' }]" @click="activeTab = 'dossiers'">Dossiers</button>
             <button :class="['tab-btn', { active: activeTab === 'formulaire' }]" @click="activeTab = 'formulaire'">Validation</button>
           </div>
 
           <div v-if="activeTab === 'dossiers'" class="tab-content">
             <div class="patient-file">
-              <h3>Cabinet du Dr Deckard</h3>
+              <div class="file-badge">Consultation</div>
+              <h3>Dr Deckard — Cabinet médical</h3>
+              <div class="file-meta">
+                <span>Patient : M. Roy Batty</span>
+                <span>Date : 15/01/2026</span>
+              </div>
               <div class="file-content">
-                <p><strong>Patient :</strong> M. Roy Batty</p>
-                <p><strong>Date :</strong> 15/01/2026</p>
-                <p><strong>Diagnostic :</strong></p>
-                <p class="highlight">Le patient présente les symptômes d'une <span class="keyword">GRIPPE</span> (code CIM-10 : <span class="code">J10</span>).</p>
-                <p><em>Prescrire un traitement adapté. Deux alternatives thérapeutiques existent.</em></p>
+                <p class="highlight">Le patient présente les symptômes d'une <span class="keyword">GRIPPE</span> (code CIM-10 : <span class="code-tag">J10</span>).</p>
+                <p class="file-note">Prescrire un traitement adapté. Deux alternatives thérapeutiques existent.</p>
               </div>
             </div>
-            <div class="patient-file">
-              <h3>Rapport d'autopsie — Mme Susan Calvin</h3>
+            <div class="patient-file autopsy">
+              <div class="file-badge urgent">Autopsie</div>
+              <h3>Mme Susan Calvin</h3>
+              <div class="file-meta">
+                <span>Décès : 22/12/2025</span>
+                <span>Légiste : Dr Eldon Tyrell</span>
+              </div>
               <div class="file-content">
-                <p><strong>Date du décès :</strong> 22/12/2025</p>
-                <p><strong>Médecin légiste :</strong> Dr Eldon Tyrell</p>
-                <p class="highlight">La victime souffrait de <span class="keyword">PNEUMOPATHIE BACTÉRIENNE</span> (code CIM-10 : <span class="code">J15.9</span>).</p>
-                <p class="highlight warning">Le traitement administré n'était <strong>pas le bon</strong>. Si le traitement de 1ère intention avait été prescrit, la patiente aurait pu être sauvée.</p>
+                <p class="highlight">La victime souffrait de <span class="keyword">PNEUMOPATHIE BACTÉRIENNE</span> (code CIM-10 : <span class="code-tag">J15.9</span>).</p>
+                <p class="highlight-warn">Le traitement administré n'était <strong>pas le bon</strong>. Si le traitement de 1ère intention avait été prescrit, la patiente aurait pu être sauvée.</p>
               </div>
             </div>
           </div>
 
           <div v-if="activeTab === 'formulaire'" class="tab-content">
-            <h3>Formulaire de validation</h3>
-            <p class="form-instruction">Identifiez les DCI manquantes à partir de votre enquête.</p>
+            <h3>Identification des traitements</h3>
+            <p class="form-instruction">Saisissez les DCI (dénominations communes internationales) correspondantes.</p>
             <form @submit.prevent="submitAnswers" class="validation-form">
               <div class="form-group">
-                <label><strong>1.</strong> Traitement <strong>AINS</strong> pour la grippe — DCI :</label>
-                <input v-model="answer1" type="text" placeholder="Nom de la molécule" autocomplete="off" spellcheck="false" />
+                <label>Traitement <strong>AINS</strong> pour la grippe</label>
+                <input v-model="answer1" type="text" placeholder="DCI du médicament" autocomplete="off" spellcheck="false" />
               </div>
               <div class="form-group">
-                <label><strong>2.</strong> Traitement <strong>non-AINS</strong> pour la grippe — DCI :</label>
-                <input v-model="answer2" type="text" placeholder="Nom de la molécule" autocomplete="off" spellcheck="false" />
+                <label>Traitement <strong>non-AINS</strong> pour la grippe</label>
+                <input v-model="answer2" type="text" placeholder="DCI du médicament" autocomplete="off" spellcheck="false" />
               </div>
               <div class="form-group">
-                <label><strong>3.</strong> Traitement de <strong>1ère intention</strong> pour la pneumopathie — DCI :</label>
-                <input v-model="answer3" type="text" placeholder="Nom de la molécule" autocomplete="off" spellcheck="false" />
+                <label>Traitement de <strong>1ère intention</strong> — pneumopathie</label>
+                <input v-model="answer3" type="text" placeholder="DCI du médicament" autocomplete="off" spellcheck="false" />
               </div>
               <div v-if="validationMessage" :class="['validation-msg', validationSuccess ? 'success' : 'error']">
                 {{ validationMessage }}
               </div>
               <button type="submit" class="btn-submit" :disabled="gameCompleted">
-                {{ gameCompleted ? '✅ Accès autorisé' : 'Valider les réponses' }}
+                {{ gameCompleted ? 'Accès autorisé' : 'Valider' }}
               </button>
             </form>
           </div>
@@ -161,7 +212,7 @@
       <div v-if="gameCompleted" class="win-banner">
         <div class="win-content">
           <h2>Enquête résolue</h2>
-          <p>Traitements correctement identifiés — la trousse de premiers secours est déverrouillée.</p>
+          <p>Traitements identifiés — la trousse de premiers secours est déverrouillée.</p>
         </div>
       </div>
     </transition>
@@ -188,6 +239,7 @@ const {
   gameCompleted,
   validationMessage,
   validationSuccess,
+  terminalCode,
   discoverClue,
 } = useGameState()
 
@@ -197,13 +249,13 @@ function onMiniGameWon() {
   discoverClue('bear')
 }
 
+const inventoryOpen = ref(false)
 const activeTab = ref('dossiers')
 const codeInput = ref('')
 const codeError = ref('')
-const TERMINAL_CODE = '4719'
 
 function tryUnlock() {
-  if (codeInput.value.trim() === TERMINAL_CODE) {
+  if (codeInput.value.trim() === terminalCode.value) {
     isComputerUnlocked.value = true
     codeError.value = ''
   } else {
@@ -248,117 +300,355 @@ function submitAnswers() {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
 .game-ui-overlay {
   position: fixed; inset: 0;
   pointer-events: none; z-index: 100;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
 }
 .game-ui-overlay > * { pointer-events: auto; }
 
 .hint-bar {
   position: fixed; bottom: 20px; left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(8px);
-  border-radius: 20px; padding: 8px 22px;
-  color: rgba(255, 255, 255, 0.7); font-size: 13px; z-index: 200;
+  background: rgba(15, 15, 20, 0.6); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 6px; padding: 8px 20px;
+  color: rgba(255, 255, 255, 0.55); font-size: 12px;
+  letter-spacing: 0.3px; z-index: 200;
 }
 
+/* ═══════ OVERLAY & MODAL BASE ═══════ */
 .modal-overlay {
   position: fixed; inset: 0;
-  background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+  background: rgba(5, 5, 12, 0.7); backdrop-filter: blur(6px);
   display: flex; align-items: center; justify-content: center; z-index: 300;
 }
 .modal {
-  background: #1a1a2e; border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px; padding: 28px; color: #e0e0e0;
+  background: #151520;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 4px; padding: 0; color: #c8c8d0;
   max-height: 85vh; overflow-y: auto; position: relative;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.03);
 }
 .modal-close {
-  position: absolute; top: 12px; right: 14px;
-  background: none; border: none; color: #888; font-size: 20px; cursor: pointer;
+  position: absolute; top: 14px; right: 16px;
+  background: none; border: none; color: rgba(255,255,255,0.25);
+  font-size: 18px; cursor: pointer; z-index: 10;
+  width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+  border-radius: 4px; transition: all 0.15s;
 }
-.modal-close:hover { color: #fff; }
+.modal-close:hover { color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.06); }
 
-.bear-modal { width: min(90vw, 500px); }
-.bear-modal h2 { margin-top: 0; color: #ffd700; font-size: 18px; }
+/* ═══════ NOTE PAPER (Bear modal) ═══════ */
+.bear-modal { width: min(88vw, 440px); padding: 0; overflow: hidden; }
 .note-paper {
-  background: #f5f0e1; color: #2a2215; border-radius: 6px; padding: 20px; margin-top: 16px;
-  font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.7;
-  border: 1px solid #d4c9a8;
+  background: #f2ead8;
+  color: #3a342a;
+  padding: 32px 28px 28px;
+  font-size: 13.5px; line-height: 1.75;
+  position: relative;
+  background-image:
+    repeating-linear-gradient(transparent, transparent 27px, rgba(180,160,130,0.2) 27px, rgba(180,160,130,0.2) 28px);
+}
+.note-fold {
+  position: absolute; top: 0; right: 0;
+  width: 32px; height: 32px;
+  background: linear-gradient(225deg, #151520 50%, #d9cfbb 50%);
+}
+.note-header {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+  color: #8a7d6b; margin-bottom: 12px;
+}
+.note-divider {
+  height: 1px; background: rgba(120,100,70,0.25); margin: 10px 0;
 }
 .note-code {
-  text-align: center; font-weight: bold; font-size: 16px; padding: 10px; margin-bottom: 14px;
-  border: 2px dashed #8b7355; border-radius: 4px; letter-spacing: 3px;
+  text-align: center;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-weight: 500; font-size: 17px;
+  padding: 14px; margin: 6px 0;
+  letter-spacing: 4px;
+  color: #2c2618;
 }
+.note-body { margin-top: 8px; }
 .note-body p { margin: 10px 0; }
-.note-footer { margin-top: 16px; font-style: italic; font-weight: bold; }
+.note-body strong { color: #1a1510; }
+.note-author {
+  font-size: 11.5px; color: #8a7d6b;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 14px !important;
+}
+.note-footer {
+  margin-top: 18px !important;
+  font-style: italic; color: #6b5d48;
+  border-top: 1px solid rgba(120,100,70,0.2);
+  padding-top: 12px;
+}
 
-.tables-modal { width: min(92vw, 820px); }
-.tables-modal h2 { margin-top: 0; color: #ffd700; font-size: 17px; }
-.table-section { margin-bottom: 22px; }
-.table-section h3 { color: #64b5f6; font-size: 14px; margin-bottom: 6px; font-family: 'Courier New', monospace; }
+/* ═══════ TABLES MODAL (Documents) ═══════ */
+.tables-modal { width: min(92vw, 780px); padding: 28px 32px; }
+.doc-header { margin-bottom: 24px; position: relative; }
+.doc-header h2 {
+  margin: 0; font-size: 17px; font-weight: 600;
+  color: #e0ddd6; letter-spacing: -0.2px;
+}
+.doc-sub { margin: 4px 0 0; font-size: 12px; color: rgba(255,255,255,0.3); }
+.doc-stamp {
+  display: inline-block;
+  font-size: 9px; font-weight: 600; letter-spacing: 2px;
+  color: #c0392b; border: 1.5px solid #c0392b;
+  padding: 2px 8px; border-radius: 2px;
+  transform: rotate(-2deg);
+  margin-bottom: 8px; opacity: 0.7;
+}
+
+.table-section { margin-bottom: 26px; }
+.table-section:last-child { margin-bottom: 0; }
+.table-section h3 {
+  font-size: 12px; font-weight: 600;
+  color: rgba(255,255,255,0.45); letter-spacing: 0.3px;
+  margin: 0 0 8px; padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
-thead th { background: rgba(100, 181, 246, 0.12); color: #90caf9; padding: 7px 10px; text-align: left; font-weight: 600; border-bottom: 2px solid rgba(100, 181, 246, 0.25); }
-tbody td { padding: 7px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
+thead th {
+  background: rgba(255,255,255,0.03);
+  color: rgba(255,255,255,0.5);
+  padding: 8px 12px; text-align: left; font-weight: 500; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+tbody td {
+  padding: 7px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: #b0aeb8;
+}
+tbody tr:nth-child(even) { background: rgba(255,255,255,0.015); }
+tbody tr:hover { background: rgba(255,255,255,0.04); }
+tbody td:first-child {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  color: #8a9aaa;
+}
 
-.medicine-modal { width: min(90vw, 400px); text-align: center; }
-.medicine-modal h2 { margin-top: 0; color: #ffd700; }
-.medicine-name { font-size: 18px; font-weight: 600; color: #64ffda; margin: 14px 0; }
-.medicine-hint { color: #999; font-size: 13px; }
+/* ═══════ MEDICINE MODAL ═══════ */
+.medicine-modal { width: min(88vw, 380px); text-align: center; padding: 32px 28px; }
+.med-icon { color: rgba(255,255,255,0.2); margin-bottom: 12px; }
+.medicine-modal h2 { margin: 0 0 4px; font-size: 15px; font-weight: 600; color: #d0cdc5; }
+.medicine-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px; font-weight: 500; color: #8a9aaa;
+  margin: 12px 0;
+  padding: 8px 14px; background: rgba(255,255,255,0.04);
+  border-radius: 3px; display: inline-block;
+}
+.medicine-hint { color: rgba(255,255,255,0.3); font-size: 12px; line-height: 1.6; margin: 12px 0 0; }
 
-.computer-modal { width: min(92vw, 700px); }
+/* ═══════ COMPUTER TERMINAL ═══════ */
+.computer-modal { width: min(92vw, 660px); padding: 0; overflow: hidden; }
 
-.lock-screen { text-align: center; padding: 30px 0; }
-.lock-icon { font-size: 48px; margin-bottom: 12px; }
-.lock-screen h2 { margin: 0 0 8px; color: #e0e0e0; font-size: 18px; }
-.lock-instruction { color: #999; font-size: 14px; margin-bottom: 20px; }
+/* Lock screen */
+.lock-screen { text-align: center; padding: 48px 32px 40px; }
+.lock-svg { color: rgba(255,255,255,0.15); margin-bottom: 18px; }
+.lock-screen h2 {
+  margin: 0 0 6px; color: #d0cdc5; font-size: 16px; font-weight: 600;
+}
+.lock-sub { color: rgba(255,255,255,0.3); font-size: 12.5px; margin: 0 0 24px; }
 .code-entry { display: flex; gap: 10px; justify-content: center; align-items: center; }
 .code-input {
-  width: 140px; text-align: center; font-size: 24px; letter-spacing: 8px;
-  font-family: 'Courier New', monospace; padding: 10px;
-  border: 2px solid rgba(255,255,255,0.15); border-radius: 8px;
-  background: #16213e; color: #64ffda;
+  width: 120px; text-align: center; font-size: 22px; letter-spacing: 6px;
+  font-family: 'IBM Plex Mono', monospace; padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 3px;
+  background: rgba(255,255,255,0.03); color: #d0cdc5;
+  transition: border-color 0.2s;
 }
-.code-input:focus { outline: none; border-color: #64b5f6; }
+.code-input::placeholder { color: rgba(255,255,255,0.15); letter-spacing: 8px; }
+.code-input:focus { outline: none; border-color: rgba(255,255,255,0.25); }
 .btn-unlock {
-  padding: 10px 20px; border: none; border-radius: 8px;
-  background: #1a73e8; color: #fff; font-weight: 600; cursor: pointer; font-size: 14px;
+  padding: 10px 18px; border: 1px solid rgba(255,255,255,0.12); border-radius: 3px;
+  background: rgba(255,255,255,0.06); color: #c8c8d0;
+  font-weight: 500; cursor: pointer; font-size: 13px; transition: all 0.15s;
 }
-.btn-unlock:hover { background: #1565c0; }
-.code-error { color: #ff5252; font-size: 14px; margin-top: 12px; font-weight: 600; }
+.btn-unlock:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+.code-error { color: #cf6679; font-size: 12.5px; margin-top: 14px; }
 
-.computer-tabs { display: flex; gap: 4px; margin-bottom: 18px; border-bottom: 2px solid rgba(255,255,255,0.08); }
-.tab-btn { background: none; border: none; color: #888; font-size: 14px; font-weight: 600; padding: 10px 16px; cursor: pointer; border-bottom: 3px solid transparent; transition: color 0.2s; }
-.tab-btn:hover { color: #ccc; }
-.tab-btn.active { color: #64b5f6; border-bottom-color: #64b5f6; }
+/* Terminal unlocked */
+.terminal-bar {
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.terminal-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.terminal-dot.red { background: #e05050; }
+.terminal-dot.yellow { background: #e0b850; }
+.terminal-dot.green { background: #50b860; }
+.terminal-title {
+  margin-left: 8px; font-size: 11px;
+  color: rgba(255,255,255,0.3); letter-spacing: 0.3px;
+}
 
-.patient-file { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 18px; margin-bottom: 14px; }
-.patient-file h3 { margin-top: 0; color: #ffd700; font-size: 15px; }
-.file-content p { margin: 5px 0; line-height: 1.6; }
-.highlight { background: rgba(100,181,246,0.08); border-left: 3px solid #64b5f6; padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 10px 0; }
-.highlight.warning { background: rgba(255,152,0,0.08); border-left-color: #ff9800; }
-.keyword { color: #ff5252; font-weight: 700; }
-.code { background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; color: #64ffda; }
+.computer-tabs {
+  display: flex; gap: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 0 16px;
+}
+.tab-btn {
+  background: none; border: none;
+  color: rgba(255,255,255,0.35); font-size: 13px; font-weight: 500;
+  padding: 12px 16px; cursor: pointer;
+  border-bottom: 2px solid transparent; transition: all 0.15s;
+  font-family: inherit;
+}
+.tab-btn:hover { color: rgba(255,255,255,0.6); }
+.tab-btn.active { color: #d0cdc5; border-bottom-color: #d0cdc5; }
 
-.form-instruction { color: #999; font-size: 13px; margin-bottom: 18px; line-height: 1.5; }
-.validation-form { display: flex; flex-direction: column; gap: 16px; }
-.form-group label { display: block; margin-bottom: 5px; font-size: 14px; line-height: 1.5; }
-.form-group input { width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; background: #16213e; color: #e0e0e0; font-size: 14px; box-sizing: border-box; }
-.form-group input:focus { outline: none; border-color: #64b5f6; }
-.validation-msg { padding: 10px 14px; border-radius: 8px; font-weight: 600; text-align: center; font-size: 14px; }
-.validation-msg.error { background: rgba(255,82,82,0.12); color: #ff5252; border: 1px solid rgba(255,82,82,0.25); }
-.validation-msg.success { background: rgba(76,175,80,0.12); color: #4caf50; border: 1px solid rgba(76,175,80,0.25); }
-.btn-submit { padding: 12px 24px; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; background: linear-gradient(135deg, #1a73e8, #0d47a1); color: #fff; transition: all 0.2s; }
-.btn-submit:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,115,232,0.35); }
-.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.tab-content { padding: 20px 24px; }
+.tab-content h3 { margin: 0 0 6px; font-size: 15px; font-weight: 600; color: #d0cdc5; }
 
-.win-banner { position: fixed; top: 0; left: 0; right: 0; background: linear-gradient(135deg, rgba(76,175,80,0.9), rgba(56,142,60,0.9)); backdrop-filter: blur(10px); padding: 18px; text-align: center; color: #fff; z-index: 400; }
-.win-content h2 { margin: 0 0 4px; font-size: 22px; }
-.win-content p { margin: 4px 0; font-size: 14px; }
+/* Patient files */
+.patient-file {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 4px; padding: 18px 20px; margin-bottom: 14px;
+  position: relative;
+}
+.file-badge {
+  position: absolute; top: 14px; right: 16px;
+  font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.8px; color: #5a8a6a;
+  padding: 2px 8px; border: 1px solid rgba(90,138,106,0.3);
+  border-radius: 2px; background: rgba(90,138,106,0.08);
+}
+.file-badge.urgent {
+  color: #c0392b; border-color: rgba(192,57,43,0.3);
+  background: rgba(192,57,43,0.08);
+}
+.patient-file h3 { margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #d0cdc5; }
+.file-meta {
+  display: flex; gap: 20px; flex-wrap: wrap;
+  font-size: 12px; color: rgba(255,255,255,0.35);
+  margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.file-content { font-size: 13.5px; line-height: 1.65; }
+.file-content p { margin: 6px 0; }
+.highlight {
+  background: rgba(255,255,255,0.03);
+  padding: 10px 14px; border-radius: 3px; margin: 10px 0;
+  border-left: 3px solid #5a8a6a;
+}
+.highlight-warn {
+  background: rgba(192,57,43,0.05);
+  padding: 10px 14px; border-radius: 3px; margin: 10px 0;
+  border-left: 3px solid #c0392b;
+}
+.keyword { color: #e8a87c; font-weight: 600; }
+.code-tag {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  background: rgba(255,255,255,0.06); padding: 1px 6px;
+  border-radius: 2px; color: #8a9aaa;
+}
+.file-note { font-style: italic; color: rgba(255,255,255,0.35); font-size: 12.5px; }
 
-.fade-enter-active, .fade-leave-active { transition: opacity 0.5s, transform 0.5s; }
-.fade-enter-from { opacity: 0; transform: translateY(-30px); }
-.fade-leave-to { opacity: 0; transform: translateY(-30px); }
-</style>
+/* Validation form */
+.form-instruction { color: rgba(255,255,255,0.3); font-size: 12px; margin-bottom: 20px; line-height: 1.5; }
+.validation-form { display: flex; flex-direction: column; gap: 18px; }
+.form-group label {
+  display: block; margin-bottom: 6px; font-size: 13px;
+  color: rgba(255,255,255,0.5); line-height: 1.5;
+}
+.form-group input {
+  width: 100%; padding: 10px 0; font-size: 14px;
+  border: none; border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: transparent; color: #d0cdc5;
+  font-family: inherit; box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.form-group input::placeholder { color: rgba(255,255,255,0.15); }
+.form-group input:focus { outline: none; border-bottom-color: rgba(255,255,255,0.35); }
+.validation-msg {
+  padding: 10px 14px; border-radius: 3px; font-size: 13px; text-align: center;
+}
+.validation-msg.error { background: rgba(192,57,43,0.08); color: #cf6679; border: 1px solid rgba(192,57,43,0.15); }
+.validation-msg.success { background: rgba(90,138,106,0.08); color: #5a8a6a; border: 1px solid rgba(90,138,106,0.15); }
+.btn-submit {
+  padding: 12px 24px; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 3px; font-size: 13px; font-weight: 500;
+  cursor: pointer; background: rgba(255,255,255,0.06); color: #d0cdc5;
+  transition: all 0.15s; font-family: inherit;
+}
+.btn-submit:hover:not(:disabled) { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+.btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ═══════ VICTORY BANNER ═══════ */
+.win-banner {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: #151520;
+  border-bottom: 1px solid rgba(90,138,106,0.3);
+  padding: 18px; text-align: center; color: #d0cdc5; z-index: 400;
+}
+.win-content h2 { margin: 0 0 2px; font-size: 16px; font-weight: 600; color: #5a8a6a; }
+.win-content p { margin: 2px 0; font-size: 12.5px; color: rgba(255,255,255,0.4); }
+
+.fade-enter-active, .fade-leave-active { transition: opacity 0.4s, transform 0.4s; }
+.fade-enter-from { opacity: 0; transform: translateY(-20px); }
+.fade-leave-to { opacity: 0; transform: translateY(-20px); }
+
+/* ═══════ INVENTORY ═══════ */
+.inventory-area {
+  position: fixed; bottom: 56px; left: 20px; z-index: 350;
+}
+.inventory-toggle {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  background: rgba(15, 15, 20, 0.75); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  color: rgba(255,255,255,0.55); font-size: 12px; font-weight: 500;
+  font-family: inherit; cursor: pointer;
+  transition: all 0.15s;
+}
+.inventory-toggle:hover { background: rgba(15, 15, 20, 0.9); color: rgba(255,255,255,0.8); }
+.inventory-toggle.open { background: rgba(15, 15, 20, 0.95); border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); }
+.inventory-toggle svg { opacity: 0.6; }
+.inventory-toggle.open svg { opacity: 1; }
+
+.inventory-panel {
+  position: absolute; bottom: 44px; left: 0;
+  width: 260px;
+  background: rgba(15, 15, 20, 0.95); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  padding: 6px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+
+.inv-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border-radius: 3px; cursor: pointer;
+  transition: background 0.12s;
+}
+.inv-item:hover { background: rgba(255,255,255,0.06); }
+
+.inv-icon {
+  width: 34px; height: 34px; border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.inv-icon.note { background: rgba(200,170,100,0.12); color: #c8a864; }
+.inv-icon.doc { background: rgba(100,140,180,0.12); color: #7aa0c0; }
+
+.inv-text { min-width: 0; }
+.inv-label { font-size: 12.5px; font-weight: 500; color: #d0cdc5; line-height: 1.3; }
+.inv-sub { font-size: 10.5px; color: rgba(255,255,255,0.3); margin-top: 1px; }
+
+.inv-slide-enter-active, .inv-slide-leave-active { transition: opacity 0.2s, transform 0.2s; }
+.inv-slide-enter-from { opacity: 0; transform: translateY(8px); }
+.inv-slide-leave-to { opacity: 0; transform: translateY(8px); }
+</style>
