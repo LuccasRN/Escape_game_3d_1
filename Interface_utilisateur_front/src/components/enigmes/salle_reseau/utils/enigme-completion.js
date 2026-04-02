@@ -1,10 +1,10 @@
-/**
+﻿/**
  * enigme-completion.js
  * 
  * Utilitaire partagé pour notifier le dashboard parent
  * quand une enigme est terminée (succès ou échec).
  * 
- * À importer dans chaque App.vue des enigmes.
+ * à€ importer dans chaque App.vue des enigmes.
  * 
  * Usage:
  *   import { notifyEnigmaCompleted } from '@/utils/enigme-completion.js'
@@ -62,3 +62,4 @@ function getTimerSeconds() {
   }
   return 0
 }
+

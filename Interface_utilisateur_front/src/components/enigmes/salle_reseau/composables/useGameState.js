@@ -1,12 +1,27 @@
-import { ref, computed } from 'vue'
+﻿import { ref, computed } from 'vue'
 import confetti from 'canvas-confetti'
-import { notifyEnigmaCompleted } from '@/utils/enigme-completion'
+import { notifyEnigmaCompleted } from '../../../../utils/enigme-completion.js'
 
 export function useGameState() {
+  const showIntro = ref(true)
   const isWifiConnected = ref(false)
   const isSafeOpened = ref(false)
   const notification = ref(null)
   const gamePassed = ref(false)
+  const routerHintActive = ref(false)
+
+  function handleHintShown(hint) {
+    if (hint === 'Rallume le routeur') {
+      routerHintActive.value = true
+      setTimeout(() => {
+        routerHintActive.value = false
+      }, 5000)
+    }
+  }
+
+  function finishIntro() {
+    showIntro.value = false
+  }
 
   const showOS = ref(false)
   const activeWindow = ref(null)
@@ -15,7 +30,7 @@ export function useGameState() {
     if (activeWindow.value === 'documents') return "C:\\\\Users\\\\Admin\\\\Documents"
     if (activeWindow.value === 'network') return "Réseau Local"
     if (activeWindow.value === 'system') return "Propriétés Système"
-    if (activeWindow.value === 'questionnaire') return "Clôture Enquête"
+    if (activeWindow.value === 'questionnaire') return "Clà´ture Enquête"
     if (activeWindow.value === 'secret_file') return "\\\\\\\\Serveur_Admin\\\\Fichiers_Secrets"
     return ""
   })
@@ -80,7 +95,7 @@ export function useGameState() {
       closeWindow()
       showOS.value = false
 
-      // ✅ Notifier le dashboard parent — succès enigme 4
+      // âœ… Notifier le dashboard parent â€” succès enigme 4
       notifyEnigmaCompleted(true, 4)
     } else {
       showNotif("Réponse(s) incorrecte(s). Veuillez vérifier le rapport d'autopsie.", 3000)
@@ -114,12 +129,15 @@ export function useGameState() {
   }
 
   return {
+    showIntro, finishIntro,
     isWifiConnected, isSafeOpened, notification, gamePassed,
+    routerHintActive,
     showOS, activeWindow, activeWindowTitle,
     showSafeLock, safeCode, safeInput,
     showAutopsyReport, answer1, answer2,
     openWindow, closeWindow, showNotif,
-    handleWifiConnected, handleMonitorClick, handleSafeClick,
+    handleWifiConnected, handleMonitorClick, handleSafeClick, handleHintShown,
     checkAnswers, pressPad, clearPad, checkSafeCode, triggerConfetti,
   }
 }
+

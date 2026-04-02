@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="autopsy-modal">
     <div class="paper-report">
       <h1>RAPPORT D'AUTOPSIE</h1>
@@ -15,24 +15,24 @@
 
       <h2>1 - OBSERVATIONS EXTERNES</h2>
       <ul>
-        <li>Œdème facial marqué (lèvres, paupières, langue)</li>
-        <li>Éruption urticarienne étendue sur le tronc</li>
+        <li>Å’dème facial marqué (lèvres, paupières, langue)</li>
+        <li>à‰ruption urticarienne étendue sur le tronc</li>
         <li>Cyanose distale</li>
         <li>Pas de lésions traumatiques visibles</li>
       </ul>
 
       <h2>2 - OBSERVATIONS INTERNES</h2>
       <ul>
-        <li><strong>Voies respiratoires :</strong> œdème laryngé sévère, obstruction glottique</li>
+        <li><strong>Voies respiratoires :</strong> Å“dème laryngé sévère, obstruction glottique</li>
         <li><strong>Poumons :</strong> congestion importante, présence de sécrétions purulentes dans les bronches</li>
-        <li><strong>Cœur :</strong> rythme rapide sans anomalie morphologique</li>
-        <li><strong>Estomac :</strong> résidus médicamenteux (analyse compatible avec corticoïdes)</li>
+        <li><strong>CÅ“ur :</strong> rythme rapide sans anomalie morphologique</li>
+        <li><strong>Estomac :</strong> résidus médicamenteux (analyse compatible avec corticoà¯des)</li>
       </ul>
 
-      <h2>3 - EXAMENS COMPLÉMENTAIRES</h2>
+      <h2>3 - EXAMENS COMPLà‰MENTAIRES</h2>
       <p><strong>A. Dosage de tryptase sérique post-mortem</strong><br>
-      Résultat : 58 µg/L (N &lt; 11 µg/L)<br>
-      Taux fortement augmenté, compatible avec une réaction anaphylactique aiguë.</p>
+      Résultat : 58 Âµg/L (N &lt; 11 Âµg/L)<br>
+      Taux fortement augmenté, compatible avec une réaction anaphylactique aiguà«.</p>
 
       <p><strong>B. Bactériologie post-mortem (culture pulmonaire)</strong><br>
       Résultat : Streptococcus pneumoniae détecté<br>
@@ -42,19 +42,19 @@
       Résultat : Négative, y compris pour Influenza A et B</p>
 
       <h2>4 - CONCLUSION</h2>
-      <p>Le décès est attribué à <strong>une réaction allergique sévère liée à l'administration de corticoïdes</strong> (Prednisolone). La tryptase élevée valide l'origine allergique.</p>
-      <p>La présence d'une infection pulmonaire à pneumocoque est un facteur aggravant, mais non responsable direct du décès.</p>
+      <p>Le décès est attribué à  <strong>une réaction allergique sévère liée à  l'administration de corticoà¯des</strong> (Prednisolone). La tryptase élevée valide l'origine allergique.</p>
+      <p>La présence d'une infection pulmonaire à  pneumocoque est un facteur aggravant, mais non responsable direct du décès.</p>
       <p><em>Le contexte médicamenteux soulève la question d'une erreur thérapeutique ou d'un acte intentionnel.</em></p>
 
-      <p><strong>CAUSE DU DÉCÈS :</strong> Choc anaphylactique secondaire à l'exposition aux corticoïdes.</p>
-      <p><strong>FACTEURS CONTRIBUTIFS :</strong> La patiente souffrait d'une <strong>pneumopathie bactérienne</strong> (infection respiratoire à Streptococcus pneumoniae).</p>
+      <p><strong>CAUSE DU Dà‰CàˆS :</strong> Choc anaphylactique secondaire à  l'exposition aux corticoà¯des.</p>
+      <p><strong>FACTEURS CONTRIBUTIFS :</strong> La patiente souffrait d'une <strong>pneumopathie bactérienne</strong> (infection respiratoire à  Streptococcus pneumoniae).</p>
 
       <div class="signature">
         Dr Goureau T.<br>
         <span style="font-family: 'Brush Script MT', cursive; font-size: 1.5rem;">Dr T. Goureau</span>
       </div>
     </div>
-    <button class="close-btn-safe" @click="$emit('close')">Remettre dans le coffre</button>
+    <button class="close-btn-report" @click="$emit('close')">&times;</button>
   </div>
 </template>
 
@@ -99,5 +99,14 @@ defineEmits(['close'])
 .signature {
   margin-top: 50px; text-align: right; margin-right: 50px; font-weight: bold;
 }
-.close-btn-safe { background: #d32f2f; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; font-weight: bold; width: 100%; }
+.close-btn-report {
+  position: absolute; top: 10px; right: 10px;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: none; background: rgba(0,0,0,0.5); color: white;
+  font-size: 22px; cursor: pointer; z-index: 5;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.close-btn-report:hover { background: rgba(0,0,0,0.8); }
 </style>
+

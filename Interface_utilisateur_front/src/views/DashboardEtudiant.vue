@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="dashboard-layout">
     <header class="dashboard-header">
       <button @click="logout" class="btn-logout">
@@ -115,11 +115,11 @@ const error = ref(null)
 // Mapping enigme ID -> route de l'enigme (ordre défini par les sous-dossiers)
 // IDs dans la BD correspondent à l'ordre d'insertion des enigmes
 const ENIGME_ROUTES = {
-  1: '/enigme/bureau',
-  2: '/enigme/chambre-patient',
-  3: '/enigme/pharmacie',
-  4: '/enigme/salle-reseau',
-  5: '/enigme/salle-reunion',
+  2: '/enigme/bureau',
+  3: '/enigme/chambre-patient',
+  4: '/enigme/pharmacie',
+  5: '/enigme/salle-reseau',
+  6: '/enigme/salle-reunion',
 }
 
 // Données statiques de présentation par index (0-based)

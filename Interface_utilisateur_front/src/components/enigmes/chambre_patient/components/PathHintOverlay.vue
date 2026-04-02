@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-import { useGameState } from '@/composables/useGameState.js'
+import { useGameState } from '../composables/useGameState.js'
 
 const { showPathHint } = useGameState()
 

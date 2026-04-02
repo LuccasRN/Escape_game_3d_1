@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="hint-btn-wrapper" @click="getHint">
     <div class="button" :class="{ exhausted: limitReached }">
       <button name="checkbox" type="button"></button>
@@ -58,8 +58,8 @@ function getHint() {
 
 <style scoped>
 .hint-btn-wrapper {
-  position: absolute;
-  top: 24px;
+  position: fixed;
+  top: 80px;
   left: 24px;
   z-index: 9999;
   display: flex;

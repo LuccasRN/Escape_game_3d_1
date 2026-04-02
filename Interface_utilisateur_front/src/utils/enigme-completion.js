@@ -1,4 +1,4 @@
-/**
+﻿/**
  * enigme-completion.js
  * 
  * Utilitaire partagé pour notifier le dashboard parent
@@ -33,8 +33,8 @@ export function notifyEnigmaCompleted(success = true, enigmaId = null) {
   // Envoyer au parent (si dans un iframe)
   if (window.parent && window.parent !== window) {
     window.parent.postMessage(message, '*')
-  }
-
+  }  // Envoyer aussi à la fenêtre courante pour le mode SFC
+  window.postMessage(message, '*')
   // Stocker dans localStorage pour récupération
   localStorage.setItem('lastEnigmaResult', JSON.stringify({
     ...message,

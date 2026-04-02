@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="safe-modal">
     <h2>Digicode Coffre-Fort</h2>
     <div class="pad-display">{{ safeInput || '----' }}</div>
@@ -44,3 +44,4 @@ defineEmits(['pressPad', 'clearPad', 'checkCode', 'cancel'])
 .pad-grid button:active { transform: translateY(4px); box-shadow: 0 0 0 #111; }
 .close-btn-safe { background: #d32f2f; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; font-weight: bold; width: 100%; }
 </style>
+

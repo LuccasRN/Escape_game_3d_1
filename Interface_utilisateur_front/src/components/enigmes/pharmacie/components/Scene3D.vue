@@ -13,7 +13,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js'
-import { useGameState } from "../composables/useGameState.vue"
+import { useGameState } from '../composables/useGameState.vue'
 
 const containerRef = ref(null)
 const SKY_COLOR = 0x87ceeb
@@ -27,6 +27,7 @@ const {
   currentMedicineName,
   gameCompleted,
   discoverClue,
+  discoveredClues,
 } = useGameState()
 
 // Variables Three.js
@@ -100,7 +101,7 @@ function initScene() {
   const draco = new DRACOLoader()
   draco.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
   const ktx2 = new KTX2Loader()
-  ktx2.setTranscoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/basis/')
+  ktx2.setTranscoderPath('https://cdn.jsdelivr.net/npm/three@0.183.1/examples/jsm/libs/basis/')
   ktx2.detectSupport(renderer)
 
   const loader = new GLTFLoader()
@@ -167,7 +168,11 @@ function onClick() {
     isComputerUIOpen.value = true
     discoverClue('computer')
   } else if (name.startsWith('bear_doll')) {
-    showMiniGame.value = true
+    if (discoveredClues.includes('bear')) {
+      showBearInfo.value = true
+    } else {
+      showMiniGame.value = true
+    }
   } else if (name.startsWith('box_of_medicine')) {
     currentMedicineName.value = hits[0].object.name
     showMedicineInfo.value = true

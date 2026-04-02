@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="capybara-overlay">
     <div class="jp-matrix">
       <template v-for="n in 10" :key="n">

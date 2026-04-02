@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <GameOverlay :visible="visible" @close="$emit('close')">
     <div class="computer-frame">
       <div class="screen-bezel">

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <GameOverlay :visible="visible" @close="$emit('close')">
     <div class="server-frame">
       <div class="server-icon">🖥️</div>

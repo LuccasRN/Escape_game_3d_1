@@ -1,10 +1,10 @@
-import { ref, onBeforeUnmount } from 'vue'
+﻿import { ref, onBeforeUnmount } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js'
-import { openChoice } from "../composables/useGameState.js"
+import { openChoice } from './useGameState.js'
 
 const SKY_COLOR = 0x87ceeb
 
@@ -27,8 +27,8 @@ export function useThreeScene(containerRef) {
     scene = new THREE.Scene()
     scene.background = new THREE.Color(SKY_COLOR)
 
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-    camera.position.set(1.5, 1.5, 1.5) 
+    camera = new THREE.PerspectiveCamera(95, window.innerWidth / window.innerHeight, 0.1, 1000)
+    camera.position.set(3.8, 2.2, 3.8) 
     renderer = new THREE.WebGLRenderer({ antialias: true })
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
@@ -43,8 +43,8 @@ export function useThreeScene(containerRef) {
     controls.dampingFactor = 0.05
     
     // limiter le zoom avec la molettre
-    controls.minDistance = 0.1
-    controls.maxDistance = 3.5 
+    controls.minDistance = 0.5
+    controls.maxDistance = 7.0 
     
     // empecher le déplacement clic droit 
     controls.enablePan = false
@@ -65,12 +65,12 @@ export function useThreeScene(containerRef) {
     
     // Draco Loader
     const dracoLoader = new DRACOLoader()
-    dracoLoader.setDecoderPath('/draco/')
+    dracoLoader.setDecoderPath('/enigmes/salle_reunion/draco/')
     gltfLoader.setDRACOLoader(dracoLoader)
 
     // KTX2 Loader just in case
     const ktx2Loader = new KTX2Loader()
-    ktx2Loader.setTranscoderPath('/basis/')
+    ktx2Loader.setTranscoderPath('/enigmes/salle_reunion/basis/')
     ktx2Loader.detectSupport(renderer)
     gltfLoader.setKTX2Loader(ktx2Loader)
 
@@ -130,8 +130,8 @@ export function useThreeScene(containerRef) {
       const clickedMesh = intersects[0].object
       const name = clickedMesh.name
       console.log('Clicked mesh:', name)
-      
-      if (name === 'Circle001_1' || name === 'Circle001') {
+
+      if (name === 'Mat_Circular_table-material' || name.includes('Mat_Circular_table-material')) {
         openChoice()
       }
     }

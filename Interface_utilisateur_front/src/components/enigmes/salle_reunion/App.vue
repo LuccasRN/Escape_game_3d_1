@@ -1,34 +1,30 @@
-<template>
+﻿<template>
   <div id="app">
-    <div class="game-container">
+    <IntroScreen v-if="gameState.showIntro" @finish="finishIntro" />
+    <div v-else class="game-container">
       <Scene3D />
       <GameUI />
-
-      <div v-if="gameState.gamePassed" class="overlay success">
-        <h2>Félicitations</h2>
-        <p>{{ gameState.choiceMessage }}</p>
-        <p class="final-time">Temps final : {{ finalTime }}</p>
-      </div>
-      <div v-if="gameState.gameOver" class="overlay error">
-        <h2>Échec</h2>
-        <p>{{ gameState.choiceMessage }}</p>
-        <p class="final-time">Temps final : {{ finalTime }}</p>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
-import { gameState } from './composables/useGameState.js'
+import { gameState, finishIntro } from './composables/useGameState.js'
+import IntroScreen from './components/IntroScreen.vue'
 import Scene3D from './components/Scene3D.vue'
 import GameUI from './components/GameUI.vue'
 
+
 const finalTime = ref('00:00')
+const finalScore = ref(0)
 
 watch(() => gameState.gamePassed || gameState.gameOver, (ended) => {
   if (ended && window.getTimerValue) {
     finalTime.value = window.getTimerValue()
+  }
+  if (ended && window.getScoreValue) {
+    finalScore.value = window.getScoreValue()
   }
 })
 </script>
@@ -85,7 +81,7 @@ watch(() => gameState.gamePassed || gameState.gameOver, (ended) => {
 .overlay.error { 
   border: 3px solid #ef4444; 
 }
-.final-time {
+.final-time, .final-score {
   margin-top: 25px;
   font-size: 1.4rem;
   font-weight: bold;

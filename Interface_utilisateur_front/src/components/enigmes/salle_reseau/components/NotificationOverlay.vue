@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div v-if="notification" class="notification">
     <span v-html="notification"></span>
   </div>
@@ -37,3 +37,4 @@ defineProps({
   100% { box-shadow: 0 0 5px cyan; }
 }
 </style>
+

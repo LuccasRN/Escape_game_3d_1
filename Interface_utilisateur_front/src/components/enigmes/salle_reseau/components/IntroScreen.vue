@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="intro-container">
     <div class="starfield"></div>
     
@@ -37,8 +37,7 @@ function skipIntro() {
 </script>
 
 <style scoped>
-.intro-container {
-  position: absolute;
+.intro-container { position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
@@ -176,3 +175,4 @@ function skipIntro() {
   }
 }
 </style>
+

@@ -1,4 +1,6 @@
-<template>
+﻿<template>
+  <IntroScreen v-if="showIntro" @finish="finishIntro" />
+  <template v-else>
   <CapybaraLoader v-if="isLoading" :progress="loadingProgress" />
   <div id="experience">
     <canvas ref="canvasRef" class="experience-canvas"></canvas>
@@ -7,6 +9,15 @@
 
 
   <HintSystem :hints="['Regarde bien les plantes ', 'Date de naissance ', 'Maladie et allergies ']" />
+
+
+
+
+<DocumentInventory
+  :documents="inventoryDocs"
+  :z-index="1100"
+  @open-document="openDocFromInventory"
+/>
 
 
   <ComputerOverlay
@@ -61,11 +72,15 @@
     @completed="onGameCompleted"
   />
 </template>
+</template>
 
 <script setup>
-import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
+import { ref, reactive, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useThreeScene } from './composables/useThreeScene.js'
 import CapybaraLoader from './components/CapybaraLoader.vue'
+import IntroScreen from './components/IntroScreen.vue'
+import DocumentInventory from './components/DocumentInventory.vue'
+
 import HintSystem from './components/HintSystem.vue'
 import ComputerOverlay from './components/ComputerOverlay.vue'
 import ImageOverlay from './components/ImageOverlay.vue'
@@ -73,6 +88,29 @@ import ServerOverlay from './components/ServerOverlay.vue'
 import SkeletonOverlay from './components/SkeletonOverlay.vue'
 
 const canvasRef = ref(null)
+
+const showIntro = ref(true)
+function finishIntro() {
+  showIntro.value = false
+}
+
+const gamePassed = ref(false)
+const finalTime = ref('00:00')
+const finalScore = ref(0)
+const discovered = reactive({ dog: false, draw: false, anniv: false, server: false, chest: false })
+
+const inventoryDocs = computed(() => [
+  { id: 'dog', label: 'Photo d\'Oslo', sub: 'Le chien de la famille', icon: 'image', discovered: discovered.dog },
+  { id: 'draw', label: 'Dessin de Léa', sub: 'Cadre blanc', icon: 'image', discovered: discovered.draw },
+  { id: 'anniv', label: 'Photo de mariage', sub: 'Sur le mur', icon: 'image', discovered: discovered.anniv },
+  { id: 'chest', label: 'Coffre fort', sub: 'Combinaison', icon: 'lock', discovered: discovered.chest },
+  { id: 'server', label: 'Serveur secret', sub: 'Surchauffe', icon: 'computer', discovered: discovered.server }
+])
+
+function openDocFromInventory(id) {
+  overlays[id] = true
+  sceneApi.setControlsEnabled(false)
+}
 
 const overlays = reactive({
   computer: false,
@@ -90,6 +128,9 @@ function onObjectClick(objectType) {
   if (objectType === 'computer') {
     computerSrc.value = '/enigmes/bureau/Cabinet Deckard/Enigme Cabinet Deckard.html'
   }
+  if (['dog', 'draw', 'anniv', 'server', 'chest'].includes(objectType)) {
+    discovered[objectType] = true
+  }
   overlays[objectType] = true
   sceneApi.setControlsEnabled(false)
 }
@@ -106,6 +147,9 @@ function closeOverlay(name) {
 }
 
 function onGameCompleted() {
+  gamePassed.value = true
+  if (window.getTimerValue) finalTime.value = window.getTimerValue()
+  if (window.getScoreValue) finalScore.value = window.getScoreValue()
 }
 
 
@@ -129,8 +173,15 @@ const sceneApi = useThreeScene(canvasRef, emitProxy)
 const { toggleNightMode, isLoading, loadingProgress } = sceneApi
 
 onMounted(() => {
-  sceneApi.init()
   window.addEventListener('keydown', onEscapeKey)
+  if (!showIntro.value) sceneApi.init()
+})
+
+watch(showIntro, async (newVal) => {
+  if (!newVal) {
+    await nextTick()
+    sceneApi.init()
+  }
 })
 
 onBeforeUnmount(() => {
@@ -144,8 +195,8 @@ onBeforeUnmount(() => {
 
 .night-mode-btn {
   position: absolute;
-  bottom: 24px;
-  left: 24px;
+  top: 80px;
+  right: 24px;
   z-index: 10;
   padding: 10px;
   border: none;
@@ -155,4 +206,10 @@ onBeforeUnmount(() => {
   background: linear-gradient(135deg, #1a1a2e, #16213e);
 }
 </style>
+
+
+
+
+
+
 

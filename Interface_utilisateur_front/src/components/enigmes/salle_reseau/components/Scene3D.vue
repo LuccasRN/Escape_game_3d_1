@@ -18,6 +18,10 @@ const props = defineProps({
   safeOpened: {
     type: Boolean,
     default: false
+  },
+  routerHintActive: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -65,3 +69,4 @@ watch(() => props.safeOpened, (newVal) => {
   display: block;
 }
 </style>
+

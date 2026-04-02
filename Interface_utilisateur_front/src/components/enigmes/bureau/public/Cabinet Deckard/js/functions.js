@@ -1,4 +1,4 @@
-function send() {
+﻿function send() {
 
     // recupération des valeurs
     var val = document.getElementById("password").value;

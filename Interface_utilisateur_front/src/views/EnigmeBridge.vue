@@ -1,5 +1,5 @@
-<template>
-  <div class="enigma-wrapper">
+﻿<template>
+  <div class="enigma-wrapper" :class="{ 'enigma-solved': showSuccessModal }">
     <!-- Header avec retour et timer -->
     <header class="enigma-header">
       <button @click="confirmExit" class="btn-back">
@@ -53,6 +53,7 @@
         <h3>Enigme résolue !</h3>
         <p>Félicitations ! Vous avez complété <strong>{{ enigmaName }}</strong></p>
         <p class="time-result">Temps : <strong>{{ displayTime }}</strong></p>
+        <p class="score-result">Score : <strong class="score-value">{{ finalScore }} / 1000</strong></p>
         <button @click="goBack" class="btn-back-success">Retour au dashboard</button>
       </div>
     </div>
@@ -72,10 +73,11 @@ const props = defineProps({
 
 const componentsMap = {
   1: defineAsyncComponent(() => import('../components/enigmes/bureau/App.vue')),
-  2: defineAsyncComponent(() => import('../components/enigmes/chambre_patient/App.vue')),
-  3: defineAsyncComponent(() => import('../components/enigmes/pharmacie/App.vue')),
-  4: defineAsyncComponent(() => import('../components/enigmes/salle_reseau/App.vue')),
-  5: defineAsyncComponent(() => import('../components/enigmes/salle_reunion/App.vue')),
+  2: defineAsyncComponent(() => import('../components/enigmes/bureau/App.vue')),
+  3: defineAsyncComponent(() => import('../components/enigmes/chambre_patient/App.vue')),
+  4: defineAsyncComponent(() => import('../components/enigmes/pharmacie/App.vue')),
+  5: defineAsyncComponent(() => import('../components/enigmes/salle_reseau/App.vue')),
+  6: defineAsyncComponent(() => import('../components/enigmes/salle_reunion/App.vue')),
 }
 const activeComponent = computed(() => componentsMap[props.enigmaId])
 
@@ -93,11 +95,11 @@ const displayTime = computed(() => {
   return `${m}:${s}`
 })
 
-// Écoute les messages postMessage des enigmes
-function handleMessage(event) {
-  // Accepter les messages de la même origine
-  if (event.origin !== window.location.origin) return
+const finalScore = computed(() => {
+  return Math.max(0, Math.floor(1000 * ((600 - elapsedSeconds.value) / 600)))
+})
 
+function handleMessage(event) {
   const { type, enigmaId, success, timeSeconds } = event.data || {}
 
   if (type === 'ENIGMA_COMPLETED') {
@@ -109,6 +111,15 @@ function handleMessage(event) {
 
 async function handleEnigmaCompletion(enigmaId, isSuccess, timeSeconds) {
   clearInterval(timerInterval)
+
+  // Afficher le résultat immédiatement pour ne pas faire attendre le joueur
+  if (isSuccess) {
+    showSuccessModal.value = true
+  } else {
+    // Note: Pour une meilleure UX, on pourrait afficher une modale d'échec ici
+    // au lieu d'un retour direct, mais on maintient la logique actuelle.
+    goBack()
+  }
 
   try {
     // 1. Valider le puzzle côté backend
@@ -122,12 +133,6 @@ async function handleEnigmaCompletion(enigmaId, isSuccess, timeSeconds) {
     await gameService.endGame()
   } catch (e) {
     console.warn('Impossible de terminer la session:', e)
-  }
-
-  if (isSuccess) {
-    showSuccessModal.value = true
-  } else {
-    goBack()
   }
 }
 
@@ -404,4 +409,14 @@ onBeforeUnmount(() => {
   transition: transform 0.2s;
 }
 .btn-back-success:hover { transform: translateY(-2px); }
+
+/* Cacher dynamiquement le bouton d'indice de la vue lorsqu'elle est résolue */
+:deep(.hint-btn-wrapper) {
+  transition: opacity 0.3s, visibility 0.3s;
+}
+.enigma-solved :deep(.hint-btn-wrapper) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
 </style>

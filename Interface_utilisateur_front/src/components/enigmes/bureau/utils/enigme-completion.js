@@ -1,4 +1,4 @@
-/**
+﻿/**
  * enigme-completion.js
  * 
  * Utilitaire partagé pour notifier le dashboard parent
@@ -7,7 +7,7 @@
  * À importer dans chaque App.vue des enigmes.
  * 
  * Usage:
- *   import { notifyEnigmaCompleted } from '@/utils/enigme-completion.js'
+ *   import { notifyEnigmaCompleted } from '../../../../utils/enigme-completion.js'
  *   notifyEnigmaCompleted(true)   // succès
  *   notifyEnigmaCompleted(false)  // échec
  */

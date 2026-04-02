@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <GameOverlay :visible="visible" @close="$emit('close')">
     <div class="skeleton-frame">
       <h2 class="form-title">🏆 Formulaire de Validation</h2>
@@ -26,13 +26,7 @@
         <span class="feedback" :class="feedback2Class">{{ feedback2Text }}</span>
       </div>
 
-      <button v-if="!completed" class="validate-btn" @click="validateAnswers">Valider</button>
-
-      <div v-if="completed" class="success-message">
-        <h3>🎉 Félicitations !</h3>
-        <p>Vous avez terminé l'escape game avec succès !</p>
-        <p v-if="finalTime" class="final-time">⏱️ Temps : {{ finalTime }}</p>
-      </div>
+      <button class="validate-btn" @click="validateAnswers">Valider</button>
 
       <button class="close-btn" @click="$emit('close')">✕</button>
     </div>
@@ -42,7 +36,7 @@
 <script setup>
 import { ref } from 'vue'
 import GameOverlay from './GameOverlay.vue'
-import { notifyEnigmaCompleted } from '@/utils/enigme-completion'
+import { notifyEnigmaCompleted } from '../../../../utils/enigme-completion'
 
 defineProps({
   visible: { type: Boolean, default: false }
@@ -84,13 +78,13 @@ function validateAnswers() {
   if (correct1 && correct2) {
     if (window.stopTimer) window.stopTimer()
     finalTime.value = window.getTimerValue ? window.getTimerValue() : ''
-    completed.value = true
+    emit('close')
     localStorage.setItem('escapeGameCompleted', 'true')
     emit('completed')
     startConfetti()
 
     // ✅ Notifier le dashboard parent
-    notifyEnigmaCompleted(true, 1)
+    notifyEnigmaCompleted(true)
   }
 }
 

@@ -35,3 +35,4 @@ file = file.replace(/<span class="icon-emoji">\?\?<\/span>\s*<span class="icon-t
 
 fs.writeFileSync('src/App.vue', file, 'utf8');
 console.log('Done replacement');
+

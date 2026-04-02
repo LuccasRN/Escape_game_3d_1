@@ -6,7 +6,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useThreeScene } from "../composables/useThreeScene.js"
+import { useThreeScene } from '../composables/useThreeScene.js'
 import CapybaraLoader from './CapybaraLoader.vue'
 
 const containerRef = ref(null)

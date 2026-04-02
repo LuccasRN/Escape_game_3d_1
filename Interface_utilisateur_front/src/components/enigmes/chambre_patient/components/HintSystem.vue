@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="hint-btn-wrapper" @click="getHint">
     <div class="button" :class="{ exhausted: limitReached }">
       <button name="checkbox" type="button"></button>
@@ -7,7 +7,7 @@
       <span></span>
       <span></span>
     </div>
-    <div class="hint-text">Indice ({{ remaining }})</div>
+    
   </div>
 
   <Teleport to="body">
@@ -58,7 +58,7 @@ function getHint() {
 
 <style scoped>
 .hint-btn-wrapper {
-  position: absolute;
+  position: fixed;
   top: 24px;
   left: 24px;
   z-index: 9999;

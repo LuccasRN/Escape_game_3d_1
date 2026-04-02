@@ -63,7 +63,7 @@
 </template>
 
 <script setup>
-import { useGameState } from "../composables/useGameState.js"
+import { useGameState } from '../composables/useGameState.js'
 
 const { showPlaquette, currentPlaqueIndex, unlockedPlaques } = useGameState()
 
@@ -112,7 +112,7 @@ function openPlaque(index) {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 200;
   padding: 16px;
   backdrop-filter: blur(4px);
 }

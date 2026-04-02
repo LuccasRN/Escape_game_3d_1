@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="hint-btn-wrapper" @click="getHint">
     <div class="button" :class="{ exhausted: limitReached }">
       <button name="checkbox" type="button"></button>

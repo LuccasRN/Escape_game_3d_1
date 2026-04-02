@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+﻿import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { DragControls } from 'three/examples/jsm/controls/DragControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -84,11 +84,11 @@ export function useThreeScene(container, props, emit) {
 
     const gltfLoader = new GLTFLoader()
     const dracoLoader = new DRACOLoader()
-    dracoLoader.setDecoderPath('/draco/')
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
     gltfLoader.setDRACOLoader(dracoLoader)
 
     const ktx2Loader = new KTX2Loader()
-    ktx2Loader.setTranscoderPath('/basis/')
+    ktx2Loader.setTranscoderPath('https://cdn.jsdelivr.net/npm/three@0.183.1/examples/jsm/libs/basis/')
     ktx2Loader.detectSupport(renderer)
     gltfLoader.setKTX2Loader(ktx2Loader)
 
@@ -239,6 +239,23 @@ export function useThreeScene(container, props, emit) {
 
   const animate = () => {
     reqId = requestAnimationFrame(animate)
+
+    if (wifiMesh && wifiMesh.material) {
+      if (props.wifiConnected) {
+        wifiMesh.material.emissive.setHex(0x00ff00)
+        wifiMesh.material.emissiveIntensity = 1.0
+      } else if (props.routerHintActive && orbitControls && orbitControls.enabled) {
+        const time = performance.now() * 0.005
+        wifiMesh.material.emissive.setHex(0xffaa00)
+        wifiMesh.material.emissiveIntensity = 0.2 + Math.abs(Math.sin(time)) * 0.8
+      } else if (orbitControls && orbitControls.enabled) {
+        wifiMesh.material.emissive.setHex(0x000000)
+        wifiMesh.material.emissiveIntensity = 0.0
+      } else if (orbitControls && !orbitControls.enabled) {
+        wifiMesh.material.emissive.setHex(0xffffff)
+      }
+    }
+
     if (orbitControls) orbitControls.update()
     if (composer) {
       composer.render()
@@ -256,3 +273,4 @@ export function useThreeScene(container, props, emit) {
 
   return { isLoading, loadingProgress, initThree, cleanup, updateMonitorState, openSafeDoor }
 }
+

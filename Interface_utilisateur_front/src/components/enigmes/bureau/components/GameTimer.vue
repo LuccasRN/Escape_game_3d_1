@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from "vue"
 
 const props = defineProps({
   timeSeconds: {
@@ -24,25 +24,34 @@ let timer = null
 
 const displayTime = computed(() => {
   const current = props.timeSeconds !== -1 ? props.timeSeconds : internalTime.value
-  const m = Math.floor(current / 60).toString().padStart(2, '0')
-  const s = (current % 60).toString().padStart(2, '0')
-  return m + ':' + s
+  const m = Math.floor(current / 60).toString().padStart(2, "0")
+  const s = (current % 60).toString().padStart(2, "0")
+  return m + ":" + s
 })
 
 // Compatibility for iframes
 window.getTimerValue = () => displayTime.value
+// Score max 1000, 10 mins (600s). Score = 0 at 600s
+window.getScoreValue = () => {
+  const current = props.timeSeconds !== -1 ? props.timeSeconds : internalTime.value
+  return Math.max(0, Math.floor(1000 * ((600 - current) / 600)))
+}
 
 onMounted(() => {
   if (props.timeSeconds === -1) {
-    const savedTime = localStorage.getItem('escapeGlobalTimer')
+    const p = window.location.pathname.replace(/\//g, "_") || "default"
+    const storageKey = "escapeGlobalTimer_" + p
+    const savedTime = localStorage.getItem(storageKey)
     if (savedTime) {
       internalTime.value = parseInt(savedTime, 10)
+    } else {
+      internalTime.value = 0
     }
-    
+
     timer = setInterval(() => {
       if (!props.stopped) {
         internalTime.value++
-        localStorage.setItem('escapeGlobalTimer', internalTime.value.toString())
+        localStorage.setItem(storageKey, internalTime.value.toString())
       }
     }, 1000)
   }
@@ -82,3 +91,4 @@ onBeforeUnmount(() => {
   letter-spacing: 0.05em;
 }
 </style>
+

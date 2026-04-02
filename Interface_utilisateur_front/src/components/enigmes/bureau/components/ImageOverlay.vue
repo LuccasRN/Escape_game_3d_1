@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <GameOverlay :visible="visible" @close="$emit('close')">
     <div class="image-frame" :class="frameStyle">
       <img v-if="imageSrc" :src="imageSrc" class="frame-image" />

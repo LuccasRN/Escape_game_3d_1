@@ -1,8 +1,10 @@
 import { ref, reactive } from 'vue'
 
+const showIntro = ref(true)
 const showComputer = ref(false)
 const showCodeBox = ref(false)
 const showPlaquette = ref(false)
+const showPathHint = ref(false)
 const currentPlaqueIndex = ref(0)
 
 const discoveredComputer = ref(false)
@@ -23,11 +25,18 @@ function unlockedPlaquesCount() {
   return unlockedPlaques.filter(Boolean).length
 }
 
+function finishIntro() {
+  showIntro.value = false
+}
+
 export function useGameState() {
   return {
+    showIntro,
+    finishIntro,
     showComputer,
     showCodeBox,
     showPlaquette,
+    showPathHint,
     currentPlaqueIndex,
     discoveredComputer,
     discoveredBox,

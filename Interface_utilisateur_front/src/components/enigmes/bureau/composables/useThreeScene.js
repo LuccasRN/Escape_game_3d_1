@@ -1,4 +1,4 @@
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+﻿import { ref, onMounted, onBeforeUnmount } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
@@ -126,7 +126,7 @@ export function useThreeScene(canvasRef, emit) {
     dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
 
     const ktx2Loader = new KTX2Loader()
-    ktx2Loader.setTranscoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/basis/')
+    ktx2Loader.setTranscoderPath('https://cdn.jsdelivr.net/npm/three@0.183.1/examples/jsm/libs/basis/')
     ktx2Loader.detectSupport(renderer)
 
     const gltfLoader = new GLTFLoader()
@@ -160,6 +160,7 @@ export function useThreeScene(canvasRef, emit) {
           }
         })
         scene.add(gltf.scene)
+console.log('Model loaded and added to scene.', gltf.scene)
 
         // Fairy lights
         const fairyLightPositions = [
@@ -324,6 +325,7 @@ export function useThreeScene(canvasRef, emit) {
 
   // Keyboard handlers
   function onKeyDown(event) {
+    if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return
     switch (event.code) {
       case 'KeyW': case 'KeyZ': case 'ArrowUp': keys.forward = true; break
       case 'KeyS': case 'ArrowDown': keys.backward = true; break
