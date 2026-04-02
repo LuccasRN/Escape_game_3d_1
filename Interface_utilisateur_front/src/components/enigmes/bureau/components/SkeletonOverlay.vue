@@ -42,7 +42,7 @@
 <script setup>
 import { ref } from 'vue'
 import GameOverlay from './GameOverlay.vue'
-import { notifyEnigmaCompleted } from '../../../../Interface_utilisateur_front/src/utils/enigme-completion'
+import { notifyEnigmaCompleted } from '../utils/enigme-completion.js'
 
 defineProps({
   visible: { type: Boolean, default: false }
@@ -214,3 +214,4 @@ function startConfetti() {
   align-items: center;
 }
 </style>
+

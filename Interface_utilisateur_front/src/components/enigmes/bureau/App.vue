@@ -113,7 +113,7 @@ import ComputerOverlay from './components/ComputerOverlay.vue'
 import ImageOverlay from './components/ImageOverlay.vue'
 import ServerOverlay from './components/ServerOverlay.vue'
 import SkeletonOverlay from './components/SkeletonOverlay.vue'
-import DocumentInventory from '../../DocumentInventory.vue'
+import DocumentInventory from './components/DocumentInventory.vue'
 
 const canvasRef = ref(null)
 const showIntro = ref(true)
@@ -313,4 +313,5 @@ onBeforeUnmount(() => {
   font-family: 'JetBrains Mono', monospace;
 }
 </style>
+
 

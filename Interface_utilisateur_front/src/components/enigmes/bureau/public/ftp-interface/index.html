@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client FTP</title>
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Source Code Pro", monospace;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #fff;
+        }
+
+        .terminal {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #0a0a0a;
+        }
+
+        .terminal-header {
+            background: #1a1a2e;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #333;
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f57; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #28c840; }
+
+        .terminal-title {
+            color: #888;
+            font-size: 12px;
+            flex: 1;
+            text-align: center;
+        }
+
+        .terminal-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .terminal-line {
+            margin: 2px 0;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .terminal-line.system {
+            color: #888;
+        }
+
+        .terminal-line.success {
+            color: #50ef87;
+        }
+
+        .terminal-line.error {
+            color: #ff4757;
+        }
+
+        .terminal-line.info {
+            color: #00bcd4;
+        }
+
+        .terminal-line.warning {
+            color: #ffd700;
+        }
+
+        .terminal-line.data {
+            color: #87ceeb;
+        }
+
+        .terminal-line.highlight {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .terminal-input-line {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .terminal-prompt {
+            color: #50ef87;
+            margin-right: 8px;
+            white-space: nowrap;
+        }
+
+        .terminal-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: "Source Code Pro", monospace;
+            font-size: 14px;
+            outline: none;
+            caret-color: #50ef87;
+        }
+
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .file-item-terminal {
+            color: #ffd700;
+            cursor: pointer;
+            padding: 2px 0;
+        }
+
+        .file-item-terminal:hover {
+            text-decoration: underline;
+        }
+
+        .patient-section {
+            border-left: 2px solid #50ef87;
+            padding-left: 15px;
+            margin: 10px 0;
+        }
+
+        .allergy-alert {
+            background: rgba(255, 71, 87, 0.15);
+            border: 1px solid #ff4757;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin-top: 10px;
+            text-align: center;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .validate-btn {
+            background: #e94560;
+            border: none;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.2s;
+        }
+
+        .validate-btn:hover {
+            background: #ff6b6b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="terminal-dots">
+                <div class="terminal-dot red"></div>
+                <div class="terminal-dot yellow"></div>
+                <div class="terminal-dot green"></div>
+            </div>
+            <div class="terminal-title">FTP Client - Terminal</div>
+        </div>
+        <div class="terminal-body" id="terminal-body">
+            <div class="terminal-line system">FTP Client v2.1 - Hôpital Central</div>
+            <div class="terminal-line system">========================================</div>
+            <div class="terminal-line system"></div>
+            <div class="terminal-line info">Tapez une commande pour commencer.</div>
+            <div class="terminal-line system">Utilisez <span style="color:#fff">connect IP:Port</span> pour vous connecter à un serveur.</div>
+            <div class="terminal-line system">Tapez <span style="color:#fff">help</span> pour voir les commandes disponibles.</div>
+            <div class="terminal-line system"></div>
+            <div class="terminal-input-line" id="input-line">
+                <span class="terminal-prompt">ftp&gt;</span>
+                <input type="text" class="terminal-input" id="terminal-input" autofocus autocomplete="off" spellcheck="false">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const correctIP = "192.168.56.100";
+        const correctPort = "21";
+        const correctAddress = correctIP + ":" + correctPort;
+        
+        let isConnected = false;
+        let currentDir = "/";
+        let inPatientFolder = false;
+        let fileOpened = false;
+
+        const terminalBody = document.getElementById('terminal-body');
+        const terminalInput = document.getElementById('terminal-input');
+        const inputLine = document.getElementById('input-line');
+
+        function addLine(text, className = '') {
+            const line = document.createElement('div');
+            line.className = 'terminal-line' + (className ? ' ' + className : '');
+            line.innerHTML = text;
+            terminalBody.insertBefore(line, inputLine);
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+        }
+
+        function updatePrompt(prompt) {
+            document.querySelector('.terminal-prompt').textContent = prompt;
+        }
+
+        function processCommand(cmd) {
+            const trimmed = cmd.trim();
+            const lower = trimmed.toLowerCase();
+
+            // Echo the command
+            addLine('<span style="color:#50ef87;">ftp&gt;</span> ' + trimmed);
+
+            if (lower === '') return;
+
+            if (lower === 'help') {
+                addLine('');
+                addLine('Commandes disponibles :', 'info');
+                addLine('  connect IP:Port   - Se connecter à un serveur FTP', 'system');
+                addLine('  ls                - Lister les fichiers', 'system');
+                addLine('  cd dossier        - Changer de répertoire', 'system');
+                addLine('  open fichier      - Ouvrir un fichier', 'system');
+                addLine('  clear             - Effacer le terminal', 'system');
+                addLine('  help              - Afficher cette aide', 'system');
+                addLine('');
+                return;
+            }
+
+            if (lower === 'clear') {
+                // Remove all lines except the input line
+                const lines = terminalBody.querySelectorAll('.terminal-line');
+                lines.forEach(l => l.remove());
+                return;
+            }
+
+            // Connect command
+            if (lower.startsWith('connect ')) {
+                const address = trimmed.substring(8).trim();
+                
+                addLine('');
+                addLine('Connexion à ' + address + '...', 'info');
+                
+                if (address === correctAddress) {
+                    setTimeout(() => {
+                        addLine('✓ Connexion établie avec succès !', 'success');
+                        addLine('  Serveur : WINDOWS_7_server (' + correctIP + ')', 'success');
+                        addLine('  Port    : ' + correctPort, 'success');
+                        addLine('  Status  : Connecté', 'success');
+                        addLine('');
+                        addLine('Tapez "ls" pour lister les fichiers.', 'system');
+                        addLine('');
+                        isConnected = true;
+                        currentDir = "/";
+                        updatePrompt('ftp ' + correctIP + '&gt;');
+                        terminalBody.scrollTop = terminalBody.scrollHeight;
+                    }, 800);
+                } else {
+                    setTimeout(() => {
+                        addLine('✗ Échec de la connexion.', 'error');
+                        if (!address.includes(':')) {
+                            addLine('  Format attendu : connect IP:Port', 'error');
+                        } else {
+                            addLine('  Serveur inaccessible ou adresse incorrecte.', 'error');
+                        }
+                        addLine('');
+                        terminalBody.scrollTop = terminalBody.scrollHeight;
+                    }, 800);
+                }
+                return;
+            }
+
+            if (!isConnected) {
+                addLine('✗ Non connecté. Utilisez "connect IP:Port" d\'abord.', 'error');
+                addLine('');
+                return;
+            }
+
+            // LS command
+            if (lower === 'ls') {
+                addLine('');
+                if (!inPatientFolder) {
+                    addLine('Contenu de / :', 'info');
+                    addLine('  📂 dossiers_patients/', 'warning');
+                } else {
+                    addLine('Contenu de /dossiers_patients/ :', 'info');
+                    addLine('  📄 Calvin_S_dossier.txt', 'data');
+                }
+                addLine('');
+                return;
+            }
+
+            // CD command
+            if (lower.startsWith('cd ')) {
+                const dir = trimmed.substring(3).trim();
+                if (dir === 'dossiers_patients' || dir === 'dossiers_patients/' || dir === '/dossiers_patients') {
+                    inPatientFolder = true;
+                    currentDir = "/dossiers_patients/";
+                    addLine('Répertoire changé vers /dossiers_patients/', 'success');
+                    updatePrompt('ftp ' + correctIP + ' /dossiers_patients&gt;');
+                } else if (dir === '..' || dir === '/') {
+                    inPatientFolder = false;
+                    currentDir = "/";
+                    addLine('Répertoire changé vers /', 'success');
+                    updatePrompt('ftp ' + correctIP + '&gt;');
+                } else {
+                    addLine('✗ Répertoire "' + dir + '" introuvable.', 'error');
+                }
+                addLine('');
+                return;
+            }
+
+            // OPEN command
+            if (lower.startsWith('open ')) {
+                const file = trimmed.substring(5).trim();
+                if ((file.toLowerCase() === 'calvin_s_dossier.txt' || file === 'Calvin_S_dossier.txt') && inPatientFolder) {
+                    fileOpened = true;
+                    addLine('');
+                    addLine('═══════════════════════════════════════', 'info');
+                    addLine('  📄 Calvin_S_dossier.txt', 'info');
+                    addLine('═══════════════════════════════════════', 'info');
+                    addLine('');
+                    addLine('  Nom            : Calvin', 'data');
+                    addLine('  Prénom         : Sabine', 'data');
+                    addLine('  Date naissance : 24/10/1985', 'data');
+                    addLine('  N° Sécu        : 2 85 10 81 123 456 78', 'data');
+                    addLine('  Médecin        : Dr R. Deckard', 'data');
+                    addLine('  Diagnostic     : Grippe (ALTERNATIVE AINS)', 'data');
+                    addLine('');
+                    addLine('  ⚠️  ALLERGIE : CORTISONE ⚠️', 'highlight');
+                    addLine('');
+                    addLine('═══════════════════════════════════════', 'info');
+                    addLine('');
+
+                    // Add completion button
+                    const btnContainer = document.createElement('div');
+                    btnContainer.style.margin = '10px 0';
+                    const btn = document.createElement('button');
+                    btn.className = 'validate-btn';
+                    btn.textContent = "Terminer l'escape game";
+                    btn.onclick = showCompletionForm;
+                    btnContainer.appendChild(btn);
+                    terminalBody.insertBefore(btnContainer, inputLine);
+
+                } else if (!inPatientFolder && (file.toLowerCase().includes('calvin'))) {
+                    addLine('✗ Fichier introuvable dans ce répertoire. Essayez "cd dossiers_patients" d\'abord.', 'error');
+                } else {
+                    addLine('✗ Fichier "' + file + '" introuvable.', 'error');
+                }
+                addLine('');
+                return;
+            }
+
+            // Unknown command
+            addLine('✗ Commande inconnue : ' + trimmed, 'error');
+            addLine('  Tapez "help" pour voir les commandes disponibles.', 'system');
+            addLine('');
+        }
+
+        terminalInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const cmd = terminalInput.value;
+                terminalInput.value = '';
+                processCommand(cmd);
+            }
+        });
+
+        // Focus on input when clicking anywhere on terminal
+        terminalBody.addEventListener('click', function() {
+            terminalInput.focus();
+        });
+
+        // Keep input focused
+        terminalInput.focus();
+    </script>
+
+    <!-- Completion overlay (form for escape game completion) -->
+    <div id="completion-overlay" style="display: none;">
+        <div class="completion-form">
+            <h2>🏆 Formulaire de Validation</h2>
+            <p class="subtitle">Répondez aux questions pour terminer l'escape game</p>
+
+            <div class="question-group">
+                <label>1. Selon le Dr Deckard, de quoi souffrait Mme Calvin ?</label>
+                <input type="text" id="answer1" placeholder="Votre réponse...">
+                <span class="feedback" id="feedback1"></span>
+            </div>
+
+            <div class="question-group">
+                <label>2. Quelles sont les informations complémentaires ?</label>
+                <input type="text" id="answer2" placeholder="Votre réponse...">
+                <span class="feedback" id="feedback2"></span>
+            </div>
+
+            <button class="validate-btn" onclick="validateAnswers()">Valider</button>
+
+            <div id="success-message" style="display: none;">
+                <h3>🎉 Félicitations !</h3>
+                <p>Vous avez terminé l'escape game avec succès !</p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        #completion-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .completion-form {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 2px solid #e94560;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .completion-form h2 {
+            color: #ffd700;
+            margin: 0 0 10px 0;
+            font-size: 20px;
+        }
+
+        .completion-form .subtitle {
+            color: #aaa;
+            font-size: 12px;
+            margin-bottom: 25px;
+        }
+
+        .question-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .question-group label {
+            display: block;
+            color: #fff;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .question-group input {
+            width: 100%;
+            padding: 12px;
+            background: #0f3460;
+            border: 2px solid #1a1a2e;
+            border-radius: 6px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .question-group input:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+
+        .feedback {
+            display: block;
+            font-size: 11px;
+            margin-top: 5px;
+            min-height: 16px;
+        }
+
+        .feedback.correct {
+            color: #50ef87;
+        }
+
+        .feedback.incorrect {
+            color: #ff6b6b;
+        }
+
+        #success-message {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(80, 239, 135, 0.1);
+            border: 2px solid #50ef87;
+            border-radius: 8px;
+        }
+
+        #success-message h3 {
+            color: #50ef87;
+            margin: 0 0 10px 0;
+        }
+
+        #success-message p {
+            color: #fff;
+            font-size: 13px;
+            margin: 5px 0;
+        }
+    </style>
+
+    <script>
+        function showCompletionForm() {
+            document.getElementById('completion-overlay').style.display = 'flex';
+        }
+
+        function validateAnswers() {
+            const answer1 = document.getElementById('answer1').value.toLowerCase().trim();
+            const answer2 = document.getElementById('answer2').value.toLowerCase().trim();
+            let correct1 = false, correct2 = false;
+
+            // Check answer 1: grippe
+            if (answer1.includes('grippe')) {
+                document.getElementById('feedback1').textContent = '✓ Correct !';
+                document.getElementById('feedback1').className = 'feedback correct';
+                correct1 = true;
+            } else {
+                document.getElementById('feedback1').className = 'feedback incorrect';
+            }
+
+            // Check answer 2: allergique cortisone
+            if (answer2.includes('cortisone')) {
+                document.getElementById('feedback2').className = 'feedback correct';
+                correct2 = true;
+            } else {
+                document.getElementById('feedback2').className = 'feedback incorrect';
+            }
+
+            if (correct1 && correct2) {
+                document.getElementById('success-message').style.display = 'block';
+                document.querySelector('.validate-btn').style.display = 'none';
+                localStorage.setItem('escapeGameCompleted', 'true');
+            }
+        }
+    </script>
+</body>
+
+</html>

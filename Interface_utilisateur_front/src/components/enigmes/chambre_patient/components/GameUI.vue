@@ -1,34 +1,6 @@
 <template>
   <div class="game-ui">
 
-    <!-- Progression -->
-    <div class="progress-panel">
-      <div class="panel-title">STATUT MISSION : CLINIC_01</div>
-      
-      <div class="step" :class="{ done: boxUnlocked }">
-        <div class="step-header">
-          <span class="status-indicator"></span>
-          <span class="step-name">Stockage Sécurisé</span>
-        </div>
-        <span class="step-hint" v-if="!boxUnlocked">Code d'Accès Requis</span>
-      </div>
-
-      <div class="step" :class="{ done: computerCompleted }">
-        <div class="step-header">
-          <span class="status-indicator"></span>
-          <span class="step-name">Nœud de Diagnostic</span>
-        </div>
-        <span class="step-hint" v-if="!computerCompleted">Calibration Requise</span>
-      </div>
-
-      <div class="step" :class="{ done: computerCompleted }">
-        <div class="step-header">
-          <span class="status-indicator"></span>
-          <span class="step-name">Protocole Thérapeutique</span>
-        </div>
-      </div>
-    </div>
-
     <!-- Document inventory -->
     <DocumentInventory
       :documents="inventoryDocs"
@@ -42,7 +14,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useGameState } from '@/composables/useGameState.js'
-import DocumentInventory from '../../../DocumentInventory.vue'
+import DocumentInventory from './DocumentInventory.vue'
 
 const {
   boxUnlocked,
@@ -156,3 +128,6 @@ function openDocFromInventory(id) {
   margin-top: 2px;
 }
 </style>
+
+
+

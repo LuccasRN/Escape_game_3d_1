@@ -225,7 +225,7 @@
 import { ref } from 'vue'
 import { useGameState } from '@/composables/useGameState.vue'
 import MiniGame from './MiniGame.vue'
-import { notifyEnigmaCompleted } from '../../../../Interface_utilisateur_front/src/utils/enigme-completion'
+import { notifyEnigmaCompleted } from '../utils/enigme-completion.js'
 
 const {
   discoveredClues,

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Intranet Hôpital">
+    <meta name="author" content="ISIS">
+    <title>Intranet Hôpital</title>
+    <!-- feuille de style -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- HTML5 shim et Respond.js pour supporter les éléments HTML5 pour Internet Explorer 8 -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="js/functions.js"></script>
+
+</head>
+<body>
+    <div class="main">
+        <div class="auth-box">
+            <div class="logo"><img src="images/logo.png"/></div>
+            <div class="login"><h1><span>identifiant : </span>deckard-r-68</h1></div>
+            <div class="password">
+                <div class="input-title"><h3>Mot de passe  :</h3></div>
+                <input type="text" id="password" name="password" required minlength="1" maxlength="20" size="20" />
+            </div>
+            <div class="link">
+                <button class="link-btn" type="button" onclick="mdplost()">mot de passe oublié</button>
+            </div>
+            <div class="validate"><button class="valid-btn" type="button" onclick="send()">VALIDER</button></div>
+        </div>
+    </div>
+    <!-- custom dialog box -->
+    <div class="dialog-box" id="dialog-box">
+        <div class="box" id="box">
+            <div class="b-top">
+                <div class="b-msg" id="b-msg"></div>
+            </div>
+            <div class="b-bottom" id="b-bottom-01"><button class="ok-btn" type="button" onclick="closebox()">fermer</button></div>
+        </div>
+    </div>
+    <!-- end custom dialog box -->
+    <!-- serveur box -->
+    <div class="serveur-box" id="serveur-box">
+        <div class="sbox" id="sbox">
+            <div class="sb-left">
+                <div class="sbl-top">
+                    <div class="info-01"><h1><span>dr R. Deckard</span></h1></div>
+                    <div class="info"><h1>n°3 256458111/1214</h1></div>
+                    <div class="info"><h1>castres - Urgences - SMUR</h1></div>
+                </div>
+                <div class="sbl-content">
+                    <div class="sblc-title"><h2>dossiers patients</h2></div>
+                    <button class="name-btn" type="button" onclick="msginfos('01')">Mr Almerac M.</button>
+                    <button class="name-btn" type="button" onclick="msginfos('02')">Mr Auzias J.</button>
+                    <button class="name-btn" type="button" onclick="msginfos('03')">Mme Beynat L.</button>
+                    <button class="name-btn" type="button" onclick="msginfos('04')">Mr Brand C.</button>
+                    <button class="name-btn" type="button" onclick="msginfos('05')">Mme Calvin S.</button>
+                    <button class="name-btn" type="button" onclick="msginfos('06')">Mme Garreau I.</button>
+                    <button class="name-btn" type="button" onclick="msginfos('07')">Mr Lorentz G.</button>
+                    <button class="name-btn" type="button" onclick="msginfos('08')">Mr Rolet R.</button>
+                    <button class="name-btn" type="button" onclick="msginfos('09')">Mme Sudre E.</button>
+                    <button class="name-btn" type="button" onclick="msginfos('10')">Mr Tourbet A.</button>
+                </div>
+            </div>
+            <div class="sb-right">
+                <div class="sbr-top">
+                    <div class="sbrt-content" id="sbrt-content"></div>
+                </div>
+                <div class="sbr-bottom" id="sbr-bottom"><img src="images/locked.png"/></div>
+            </div>
+        </div>
+    </div>
+    <!-- serveur box -->
+</body>
+</html>

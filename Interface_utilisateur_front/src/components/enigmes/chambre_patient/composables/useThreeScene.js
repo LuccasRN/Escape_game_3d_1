@@ -4,22 +4,11 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js'
-import { useGameState } from "../composables/useGameState.js"
+import { useGameState } from '@/composables/useGameState.js'
 
 const SKY_COLOR = 0x87ceeb
 
-// Noms exacts trouvés dans la scène (lowercase)
-const COMPUTER_EXACT_NAMES = new Set([
-	'keyboard',
-	'laptop',
-])
-
-const BOX_EXACT_NAMES = new Set([
-	'boite_gant001',
-	'tissue_box002',
-])
-
-// 4 plaquettes: map nom -> index de l'énigme (0..3)
+// Mapping strict des interactions
 const PLAQUE_NAME_TO_INDEX = {
 	'defaultmaterial001': 0,
 	'plane_2': 1,
@@ -27,48 +16,18 @@ const PLAQUE_NAME_TO_INDEX = {
 	'uploads_files_4069531_hospital+bed_7': 3,
 }
 
-const PLAQUE_EXACT_NAMES = new Set([
-	'defaultmaterial001',
-	'plane_2',
-	'cube014_3',
-	'uploads_files_4069531_hospital+bed_7',
-])
-
-// Fallback patterns si le modèle est renommé plus tard
-const COMPUTER_PATTERNS = ['laptop', 'computer', 'ordinateur', 'pc', 'clavier', 'keyboard', 'ecran', 'screen', 'monitor']
-const BOX_PATTERNS = ['box', 'coffre', 'boite', 'boîte', 'caisse', 'casier', 'serrure', 'locker']
-const PLAQUE_PATTERNS = ['plaque', 'sign', 'panneau', 'affiche', 'plaquette', 'notice', 'tableau_mur']
-
-function matchesPatterns(name, patterns) {
-	if (!name) return false
-	const n = name.toLowerCase()
-	return patterns.some(p => n.includes(p))
-}
-
-function getPlaqueIndexFromName(name) {
-	if (!name) return null
-	const n = name.toLowerCase()
-	if (Object.prototype.hasOwnProperty.call(PLAQUE_NAME_TO_INDEX, n)) {
-		return PLAQUE_NAME_TO_INDEX[n]
-	}
-	return null
-}
-
 function resolveInteraction(mesh) {
 	let obj = mesh
 	while (obj) {
 		const name = (obj.name || '').toLowerCase()
 
-		// 1) Noms exacts prioritaire
-		if (COMPUTER_EXACT_NAMES.has(name)) return { type: 'computer', plaqueIndex: null }
-		if (BOX_EXACT_NAMES.has(name)) return { type: 'box', plaqueIndex: null }
-		const plaqueIndex = getPlaqueIndexFromName(name)
-		if (plaqueIndex !== null) return { type: 'plaque', plaqueIndex }
+		if (name === 'keyboard') return { type: 'computer', plaqueIndex: null }
+		if (name === 'monitor_monitor_0') return { type: 'box', plaqueIndex: null }
+		if (name === 'obj3d66-395056-1-561_1') return { type: 'pathHint', plaqueIndex: null }
 
-		// 2) Fallback patterns
-		if (matchesPatterns(obj.name, COMPUTER_PATTERNS)) return { type: 'computer', plaqueIndex: null }
-		if (matchesPatterns(obj.name, BOX_PATTERNS)) return { type: 'box', plaqueIndex: null }
-		if (matchesPatterns(obj.name, PLAQUE_PATTERNS)) return { type: 'plaque', plaqueIndex: 0 }
+		if (Object.prototype.hasOwnProperty.call(PLAQUE_NAME_TO_INDEX, name)) {
+			return { type: 'plaque', plaqueIndex: PLAQUE_NAME_TO_INDEX[name] }
+		}
 
 		obj = obj.parent
 	}
@@ -95,7 +54,7 @@ export function useThreeScene(containerRef) {
 		down: false,
 	}
 
-	const { showComputer, showCodeBox, showPlaquette, currentPlaqueIndex } = useGameState()
+	const { showComputer, showCodeBox, showPlaquette, currentPlaqueIndex, showPathHint } = useGameState()
 	const { discoveredComputer, discoveredBox, unlockPlaque } = useGameState()
 
 	function init() {
@@ -166,7 +125,7 @@ export function useThreeScene(containerRef) {
 		loader.setKTX2Loader(ktx2Loader)
 
 		loader.load(
-			'/enigmes/chambre_patient/model/chambre_patient.glb',
+			'/model/chambre_patient.glb',
 			(gltf) => {
 				const model = gltf.scene
 				model.traverse((child) => {
@@ -200,12 +159,7 @@ export function useThreeScene(containerRef) {
 				model.traverse((c) => {
 					if (c.isMesh) {
 						const { type } = resolveInteraction(c)
-						const isExactPlaque = PLAQUE_EXACT_NAMES.has((c.name || '').toLowerCase())
-						if (isExactPlaque) {
-							console.log(`🪧 [plaque-exact] ${c.name}`)
-						} else {
-							console.log(type ? `⭐ [${type}] ${c.name}` : c.name)
-						}
+						console.log(type ? `⭐ [${type}] ${c.name}` : c.name)
 					}
 				})
 				console.groupEnd()
@@ -361,6 +315,8 @@ export function useThreeScene(containerRef) {
 		const hits = raycaster.intersectObjects(scene.children, true)
 		if (!hits.length) return
 		const obj = hits[0].object
+		
+		console.log('Objet cliqué dans la chambre :', obj.name)
 
 		const { type, plaqueIndex } = resolveInteraction(obj)
 		if (type === 'computer') {
@@ -369,6 +325,8 @@ export function useThreeScene(containerRef) {
 		} else if (type === 'box') {
 			discoveredBox.value = true
 			showCodeBox.value = true
+		} else if (type === 'pathHint') {
+			showPathHint.value = true
 		} else if (type === 'plaque') {
 			const idx = plaqueIndex ?? 0
 			unlockPlaque(idx)

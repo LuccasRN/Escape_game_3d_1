@@ -72,7 +72,7 @@ import OsDesktop from './components/OsDesktop.vue'
 import SafePadlock from './components/SafePadlock.vue'
 import AutopsyReport from './components/AutopsyReport.vue'
 import VictoryScreen from './components/VictoryScreen.vue'
-import DocumentInventory from '../../DocumentInventory.vue'
+import DocumentInventory from './components/DocumentInventory.vue'
 import { useGameState } from './composables/useGameState.js'
 
 const {
@@ -135,4 +135,5 @@ body, html {
   width: 100vw; height: 100vh; position: relative;
 }
 </style>
+
 
