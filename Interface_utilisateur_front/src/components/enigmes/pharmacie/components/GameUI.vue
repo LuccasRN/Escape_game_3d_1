@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="game-ui-overlay">
     <div class="hint-bar">
       <span>Explorez la pharmacie</span>
@@ -16,9 +16,9 @@
           <div class="note-divider"></div>
           <div class="note-body">
             <p class="note-author">Insp. Marchand â€” notes personnelles</p>
-            <p>Le Dr Deckard a traitÃ© un patient pour une pathologie hivernale courante (code <strong>J1_</strong>). Deux traitements Ã©taient possibles â€” un <strong>AINS</strong> et un <strong>non-AINS</strong>. VÃ©rifier la table de prescriptions.</p>
-            <p>L'affaire Calvin est plus grave. Elle souffrait d'une infection pulmonaire bactÃ©rienne (code <strong>J15._</strong>). Le traitement administrÃ© n'Ã©tait <strong>PAS</strong> le bon. Quel mÃ©dicament de premiÃ¨re intention aurait dÃ» Ãªtre utilisÃ© ?</p>
-            <p class="note-footer">â€” Trouver les rÃ©ponses. Les saisir dans le terminal.</p>
+            <p>Le Dr Deckard a traité un patient pour une pathologie hivernale courante (code <strong>J1_</strong>). Deux traitements étaient possibles â€” un <strong>AINS</strong> et un <strong>non-AINS</strong>. Vérifier la table de prescriptions.</p>
+            <p>L'affaire Calvin est plus grave. Elle souffrait d'une infection pulmonaire bactérienne (code <strong>J15._</strong>). Le traitement administré n'était <strong>PAS</strong> le bon. Quel médicament de première intention aurait dû être utilisé ?</p>
+            <p class="note-footer">â€” Trouver les réponses. Les saisir dans le terminal.</p>
           </div>
         </div>
       </div>
@@ -31,17 +31,17 @@
         <div class="doc-header">
           <div class="doc-stamp">CONFIDENTIEL</div>
           <h2>Registre pharmaceutique</h2>
-          <p class="doc-sub">Documents rÃ©cupÃ©rÃ©s sur le bureau du dispensaire</p>
+          <p class="doc-sub">Documents récupérés sur le bureau du dispensaire</p>
         </div>
         <div class="table-section">
-          <h3>Pathologies â€” RÃ©fÃ©rentiel</h3>
+          <h3>Pathologies â€” Référentiel</h3>
           <table>
             <thead><tr><th>Code CIM-10</th><th>Pathologie</th></tr></thead>
             <tbody>
-              <tr><td>J06.9</td><td>Infection aiguÃ« des voies respiratoires</td></tr>
+              <tr><td>J06.9</td><td>Infection aiguë des voies respiratoires</td></tr>
               <tr><td>J10</td><td>Grippe</td></tr>
-              <tr><td>J15.9</td><td>Pneumopathie bactÃ©rienne, sans prÃ©cision</td></tr>
-              <tr><td>E11</td><td>DiabÃ¨te de type 2</td></tr>
+              <tr><td>J15.9</td><td>Pneumopathie bactérienne, sans précision</td></tr>
+              <tr><td>E11</td><td>Diabète de type 2</td></tr>
               <tr><td>I10</td><td>Hypertension essentielle</td></tr>
               <tr><td>M54.5</td><td>Lombalgie</td></tr>
             </tbody>
@@ -50,32 +50,32 @@
         <div class="table-section">
           <h3>Prescriptions standards</h3>
           <table>
-            <thead><tr><th>Code CIM-10</th><th>Alternative</th><th>Code MÃ©dicament</th></tr></thead>
+            <thead><tr><th>Code CIM-10</th><th>Alternative</th><th>Code Médicament</th></tr></thead>
             <tbody>
               <tr><td>J06.9</td><td>Symptomatique</td><td>MED-501</td></tr>
               <tr><td>J10</td><td>AINS</td><td>MED-101</td></tr>
               <tr><td>J10</td><td>Non-AINS</td><td>MED-102</td></tr>
-              <tr><td>J15.9</td><td>1Ã¨re intention</td><td>MED-201</td></tr>
-              <tr><td>J15.9</td><td>2Ã¨me intention</td><td>MED-202</td></tr>
-              <tr><td>E11</td><td>AntidiabÃ©tique</td><td>MED-301</td></tr>
-              <tr><td>I10</td><td>1Ã¨re intention</td><td>MED-401</td></tr>
+              <tr><td>J15.9</td><td>1ère intention</td><td>MED-201</td></tr>
+              <tr><td>J15.9</td><td>2ème intention</td><td>MED-202</td></tr>
+              <tr><td>E11</td><td>Antidiabétique</td><td>MED-301</td></tr>
+              <tr><td>I10</td><td>1ère intention</td><td>MED-401</td></tr>
               <tr><td>M54.5</td><td>AINS</td><td>MED-601</td></tr>
             </tbody>
           </table>
         </div>
         <div class="table-section">
-          <h3>SpÃ©cialitÃ©s mÃ©dicamenteuses</h3>
+          <h3>Spécialités médicamenteuses</h3>
           <table>
-            <thead><tr><th>Code</th><th>DCI</th><th>Classe thÃ©rapeutique</th></tr></thead>
+            <thead><tr><th>Code</th><th>DCI</th><th>Classe thérapeutique</th></tr></thead>
             <tbody>
-              <tr><td>MED-101</td><td>IbuprofÃ¨ne</td><td>Anti-inflammatoire (AINS)</td></tr>
-              <tr><td>MED-102</td><td>Prednisone</td><td>CorticoÃ¯de</td></tr>
-              <tr><td>MED-201</td><td>Amoxicilline</td><td>Antibiotique (pÃ©nicilline)</td></tr>
-              <tr><td>MED-202</td><td>LÃ©vofloxacine</td><td>Fluoroquinolone</td></tr>
-              <tr><td>MED-301</td><td>Metformine</td><td>AntidiabÃ©tique (biguanide)</td></tr>
+              <tr><td>MED-101</td><td>Ibuprofène</td><td>Anti-inflammatoire (AINS)</td></tr>
+              <tr><td>MED-102</td><td>Prednisone</td><td>Corticoïde</td></tr>
+              <tr><td>MED-201</td><td>Amoxicilline</td><td>Antibiotique (pénicilline)</td></tr>
+              <tr><td>MED-202</td><td>Lévofloxacine</td><td>Fluoroquinolone</td></tr>
+              <tr><td>MED-301</td><td>Metformine</td><td>Antidiabétique (biguanide)</td></tr>
               <tr><td>MED-401</td><td>Amlodipine</td><td>Inhibiteur calcique</td></tr>
-              <tr><td>MED-501</td><td>ParacÃ©tamol</td><td>AnalgÃ©sique / AntipyrÃ©tique</td></tr>
-              <tr><td>MED-601</td><td>KÃ©toprofÃ¨ne</td><td>Anti-inflammatoire (AINS)</td></tr>
+              <tr><td>MED-501</td><td>Paracétamol</td><td>Analgésique / Antipyrétique</td></tr>
+              <tr><td>MED-601</td><td>Kétoprofène</td><td>Anti-inflammatoire (AINS)</td></tr>
             </tbody>
           </table>
         </div>
@@ -89,9 +89,9 @@
         <div class="med-icon">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="12" rx="2"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
         </div>
-        <h2>BoÃ®te de mÃ©dicament</h2>
+        <h2>Boîte de médicament</h2>
         <p class="medicine-name">{{ currentMedicineName }}</p>
-        <p class="medicine-hint">L'Ã©tiquette est partiellement illisible. Consultez les documents de rÃ©fÃ©rence pour identifier le contenu exact de chaque boÃ®te.</p>
+        <p class="medicine-hint">L'étiquette est partiellement illisible. Consultez les documents de référence pour identifier le contenu exact de chaque boîte.</p>
       </div>
     </div>
 
@@ -102,10 +102,10 @@
 
         <div v-if="!isComputerUnlocked" class="lock-screen">
           <svg class="lock-svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
-          <h2>Terminal MÃ©dical</h2>
-          <p class="lock-sub">AccÃ¨s restreint â€” Saisissez le code Ã  4 chiffres</p>
+          <h2>Terminal Médical</h2>
+          <p class="lock-sub">Accès restreint â€” Saisissez le code à 4 chiffres</p>
           <div class="code-entry">
-            <input v-model="codeInput" type="text" maxlength="4" placeholder="Â·Â·Â·Â·" class="code-input" @keyup.enter="tryUnlock" />
+            <input v-model="codeInput" type="text" maxlength="4" placeholder="····" class="code-input" @keyup.enter="tryUnlock" />
             <button class="btn-unlock" @click="tryUnlock">Entrer</button>
           </div>
           <p v-if="codeError" class="code-error">{{ codeError }}</p>
@@ -116,7 +116,7 @@
             <span class="terminal-dot red"></span>
             <span class="terminal-dot yellow"></span>
             <span class="terminal-dot green"></span>
-            <span class="terminal-title">Terminal â€” HÃ´pital St-Michel</span>
+            <span class="terminal-title">Terminal â€” Hôpital St-Michel</span>
           </div>
           <div class="computer-tabs">
             <button :class="['tab-btn', { active: activeTab === 'dossiers' }]" @click="activeTab = 'dossiers'">Dossiers</button>
@@ -126,51 +126,51 @@
           <div v-if="activeTab === 'dossiers'" class="tab-content">
             <div class="patient-file">
               <div class="file-badge">Consultation</div>
-              <h3>Dr Deckard â€” Cabinet mÃ©dical</h3>
+              <h3>Dr Deckard â€” Cabinet médical</h3>
               <div class="file-meta">
                 <span>Patient : M. Roy Batty</span>
                 <span>Date : 15/01/2026</span>
               </div>
               <div class="file-content">
-                <p class="highlight">Le patient prÃ©sente les symptÃ´mes d'une <span class="keyword">GRIPPE</span> (code CIM-10 : <span class="code-tag">J10</span>).</p>
-                <p class="file-note">Prescrire un traitement adaptÃ©. Deux alternatives thÃ©rapeutiques existent.</p>
+                <p class="highlight">Le patient présente les symptômes d'une <span class="keyword">GRIPPE</span> (code CIM-10 : <span class="code-tag">J10</span>).</p>
+                <p class="file-note">Prescrire un traitement adapté. Deux alternatives thérapeutiques existent.</p>
               </div>
             </div>
             <div class="patient-file autopsy">
               <div class="file-badge urgent">Autopsie</div>
               <h3>Mme Susan Calvin</h3>
               <div class="file-meta">
-                <span>DÃ©cÃ¨s : 22/12/2025</span>
-                <span>LÃ©giste : Dr Eldon Tyrell</span>
+                <span>Décès : 22/12/2025</span>
+                <span>Légiste : Dr Eldon Tyrell</span>
               </div>
               <div class="file-content">
-                <p class="highlight">La victime souffrait de <span class="keyword">PNEUMOPATHIE BACTÃ‰RIENNE</span> (code CIM-10 : <span class="code-tag">J15.9</span>).</p>
-                <p class="highlight-warn">Le traitement administrÃ© n'Ã©tait <strong>pas le bon</strong>. Si le traitement de 1Ã¨re intention avait Ã©tÃ© prescrit, la patiente aurait pu Ãªtre sauvÃ©e.</p>
+                <p class="highlight">La victime souffrait de <span class="keyword">PNEUMOPATHIE BACTÉRIENNE</span> (code CIM-10 : <span class="code-tag">J15.9</span>).</p>
+                <p class="highlight-warn">Le traitement administré n'était <strong>pas le bon</strong>. Si le traitement de 1ère intention avait été prescrit, la patiente aurait pu être sauvée.</p>
               </div>
             </div>
           </div>
 
           <div v-if="activeTab === 'formulaire'" class="tab-content">
             <h3>Identification des traitements</h3>
-            <p class="form-instruction">Saisissez les DCI (dÃ©nominations communes internationales) correspondantes.</p>
+            <p class="form-instruction">Saisissez les DCI (dénominations communes internationales) correspondantes.</p>
             <form @submit.prevent="submitAnswers" class="validation-form">
               <div class="form-group">
                 <label>Traitement <strong>AINS</strong> pour la grippe</label>
-                <input v-model="answer1" type="text" placeholder="DCI du mÃ©dicament" autocomplete="off" spellcheck="false" />
+                <input v-model="answer1" type="text" placeholder="DCI du médicament" autocomplete="off" spellcheck="false" />
               </div>
               <div class="form-group">
                 <label>Traitement <strong>non-AINS</strong> pour la grippe</label>
-                <input v-model="answer2" type="text" placeholder="DCI du mÃ©dicament" autocomplete="off" spellcheck="false" />
+                <input v-model="answer2" type="text" placeholder="DCI du médicament" autocomplete="off" spellcheck="false" />
               </div>
               <div class="form-group">
-                <label>Traitement de <strong>1Ã¨re intention</strong> â€” pneumopathie</label>
-                <input v-model="answer3" type="text" placeholder="DCI du mÃ©dicament" autocomplete="off" spellcheck="false" />
+                <label>Traitement de <strong>1ère intention</strong> â€” pneumopathie</label>
+                <input v-model="answer3" type="text" placeholder="DCI du médicament" autocomplete="off" spellcheck="false" />
               </div>
               <div v-if="validationMessage" :class="['validation-msg', validationSuccess ? 'success' : 'error']">
                 {{ validationMessage }}
               </div>
               <button type="submit" class="btn-submit" :disabled="gameCompleted">
-                {{ gameCompleted ? 'AccÃ¨s autorisÃ©' : 'Valider' }}
+                {{ gameCompleted ? 'Accès autorisé' : 'Valider' }}
               </button>
             </form>
           </div>
@@ -181,8 +181,8 @@
     <transition name="fade">
       <div v-if="gameCompleted" class="win-banner">
         <div class="win-content">
-          <h2>EnquÃªte rÃ©solue</h2>
-          <p>Traitements identifiÃ©s â€” la trousse de premiers secours est dÃ©verrouillÃ©e.</p>
+          <h2>Enquête résolue</h2>
+          <p>Traitements identifiés â€” la trousse de premiers secours est déverrouillée.</p>
         </div>
       </div>
     </transition>
@@ -229,7 +229,7 @@ function tryUnlock() {
     isComputerUnlocked.value = true
     codeError.value = ''
   } else {
-    codeError.value = 'Code incorrect â€” accÃ¨s refusÃ©.'
+    codeError.value = 'Code incorrect â€” accès refusé.'
     codeInput.value = ''
   }
 }
@@ -264,7 +264,7 @@ function submitAnswers() {
     if (!q1ok) wrong.push('1')
     if (!q2ok) wrong.push('2')
     if (!q3ok) wrong.push('3')
-    validationMessage.value = `RÃ©ponse(s) incorrecte(s) (question${wrong.length > 1 ? 's' : ''} ${wrong.join(', ')}) â€” accÃ¨s refusÃ©.`
+    validationMessage.value = `Réponse(s) incorrecte(s) (question${wrong.length > 1 ? 's' : ''} ${wrong.join(', ')}) â€” accès refusé.`
     validationSuccess.value = false
   }
 }

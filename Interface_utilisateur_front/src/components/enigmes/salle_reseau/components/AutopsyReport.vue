@@ -15,7 +15,7 @@
 
       <h2>1 - OBSERVATIONS EXTERNES</h2>
       <ul>
-        <li>Å’dème facial marqué (lèvres, paupières, langue)</li>
+        <li>Œdème facial marqué (lèvres, paupières, langue)</li>
         <li>à‰ruption urticarienne étendue sur le tronc</li>
         <li>Cyanose distale</li>
         <li>Pas de lésions traumatiques visibles</li>
@@ -23,15 +23,15 @@
 
       <h2>2 - OBSERVATIONS INTERNES</h2>
       <ul>
-        <li><strong>Voies respiratoires :</strong> Å“dème laryngé sévère, obstruction glottique</li>
+        <li><strong>Voies respiratoires :</strong> œdème laryngé sévère, obstruction glottique</li>
         <li><strong>Poumons :</strong> congestion importante, présence de sécrétions purulentes dans les bronches</li>
-        <li><strong>CÅ“ur :</strong> rythme rapide sans anomalie morphologique</li>
+        <li><strong>Cœur :</strong> rythme rapide sans anomalie morphologique</li>
         <li><strong>Estomac :</strong> résidus médicamenteux (analyse compatible avec corticoà¯des)</li>
       </ul>
 
       <h2>3 - EXAMENS COMPLà‰MENTAIRES</h2>
       <p><strong>A. Dosage de tryptase sérique post-mortem</strong><br>
-      Résultat : 58 Âµg/L (N &lt; 11 Âµg/L)<br>
+      Résultat : 58 µg/L (N &lt; 11 µg/L)<br>
       Taux fortement augmenté, compatible avec une réaction anaphylactique aiguà«.</p>
 
       <p><strong>B. Bactériologie post-mortem (culture pulmonaire)</strong><br>

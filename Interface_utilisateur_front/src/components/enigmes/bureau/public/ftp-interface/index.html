@@ -564,6 +564,14 @@
                 document.getElementById('success-message').style.display = 'block';
                 document.querySelector('.validate-btn').style.display = 'none';
                 localStorage.setItem('escapeGameCompleted', 'true');
+                
+                // Notifier l'application Vue (dashboard) de la réussite
+                if (window.parent) {
+                    window.parent.postMessage({
+                        type: 'ENIGMA_COMPLETED',
+                        success: true
+                    }, '*');
+                }
             }
         }
     </script>

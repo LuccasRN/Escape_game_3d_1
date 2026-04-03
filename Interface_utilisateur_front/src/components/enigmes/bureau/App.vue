@@ -174,8 +174,16 @@ const { toggleNightMode, isLoading, loadingProgress } = sceneApi
 
 onMounted(() => {
   window.addEventListener('keydown', onEscapeKey)
+  window.addEventListener('message', onMessage)
   if (!showIntro.value) sceneApi.init()
 })
+
+const onMessage = (event) => {
+  if (event.data?.type === 'ENIGMA_COMPLETED') {
+    onGameCompleted()
+    closeOverlay('computer')
+  }
+}
 
 watch(showIntro, async (newVal) => {
   if (!newVal) {
@@ -187,6 +195,7 @@ watch(showIntro, async (newVal) => {
 onBeforeUnmount(() => {
   sceneApi.dispose()
   window.removeEventListener('keydown', onEscapeKey)
+  window.removeEventListener('message', onMessage)
 })
 </script>
 

@@ -17,46 +17,46 @@
       <template v-if="step === 'result'">
         <div class="result-panel">
           <div class="panel-header">
-            <span class="badge success">ANALYSE TERMINÃ‰E</span>
-            <div class="result-title">RAPPORT DE DIAGNOSTIC AUTOMATISÃ‰</div>
+            <span class="badge success">ANALYSE TERMINÉE</span>
+            <div class="result-title">RAPPORT DE DIAGNOSTIC AUTOMATISÉ</div>
           </div>
           <div class="result-grid">
             <div class="result-item">
-              <span class="item-label">CATÃ‰GORIE D'ALLERGIE</span>
-              <span class="item-value">MÃ‰DICAMENTEUSE</span>
+              <span class="item-label">CATÉGORIE D'ALLERGIE</span>
+              <span class="item-value">MÉDICAMENTEUSE</span>
             </div>
             <div class="result-item">
-              <span class="item-label">NIVEAU DE RÃ‰PONSE</span>
+              <span class="item-label">NIVEAU DE RÉPONSE</span>
               <span class="item-value">35 / 100</span>
             </div>
             <div class="result-item">
-              <span class="item-label">PARAMÃˆTRES DU MODÃˆLE</span>
-              <span class="item-value">LSTM (Î±=0.3, PRÃ‰C: 0.95)</span>
+              <span class="item-label">PARAMÈTRES DU MODÈLE</span>
+              <span class="item-value">LSTM (α=0.3, PRÉC: 0.95)</span>
             </div>
           </div>
           <div class="treatment-box">
-            <span class="treatment-label">PROTOCOLE DE TRAITEMENT RECOMMANDÃ‰ :</span>
-            <span class="treatment-value">PARACÃ‰TAMOL</span>
+            <span class="treatment-label">PROTOCOLE DE TRAITEMENT RECOMMANDÉ :</span>
+            <span class="treatment-value">PARACÉTAMOL</span>
           </div>
           <div class="completion-info">
             <div class="final-timer-box">
-              <span class="final-label">TEMPS DE RÃ‰SOLUTION FINAL :</span>
+              <span class="final-label">TEMPS DE RÉSOLUTION FINAL :</span>
               <span class="final-time">{{ finalTime }}</span>
             </div>
           </div>
           <div class="gm-questions">
             <div class="gm-title">DOSSIER DE VALIDATION CLINIQUE</div>
             <div class="gm-q">
-              <p class="q-text">ID-01 : Ã‰TAT FONCTIONNEL DU RÃ‰SEAU DE NEURONES</p>
-              <p class="gm-a">STATUT : OPÃ‰RATIONNEL (CONFORME AU RAPPORT FINAL)</p>
+              <p class="q-text">ID-01 : ÉTAT FONCTIONNEL DU RÉSEAU DE NEURONES</p>
+              <p class="gm-a">STATUT : OPÉRATIONNEL (CONFORME AU RAPPORT FINAL)</p>
             </div>
             <div class="gm-q">
-              <p class="q-text">ID-02 : JUSTIFICATION DE LA MODIFICATION THÃ‰RAPEUTIQUE</p>
-              <p class="gm-a">NOTE : PRÃ‰SENCE D'ANTÃ‰CÃ‰DENTS D'ULCÃˆRE GASTRIQUE (CHOIX DE SUBSTITUTION)</p>
+              <p class="q-text">ID-02 : JUSTIFICATION DE LA MODIFICATION THÉRAPEUTIQUE</p>
+              <p class="gm-a">NOTE : PRÉSENCE D'ANTÉCÉDENTS D'ULCÈRE GASTRIQUE (CHOIX DE SUBSTITUTION)</p>
             </div>
             <div class="gm-q">
-              <p class="q-text">ID-03 : RÃ‰SULTAT DU MODÃˆLE (CAS CALVIN)</p>
-              <p class="gm-a">DIAGNOSTIC : TRAITEMENT PARACÃ‰TAMOL PRÃ‰CONISÃ‰</p>
+              <p class="q-text">ID-03 : RÉSULTAT DU MODÈLE (CAS CALVIN)</p>
+              <p class="gm-a">DIAGNOSTIC : TRAITEMENT PARACÉTAMOL PRÉCONISÉ</p>
             </div>
           </div>
         </div>
@@ -67,10 +67,10 @@
           <section class="ui-section">
             <div class="section-title">
               <span class="section-id">SECTION A</span>
-              PARAMÃˆTRES D'ENTRÃ‰E DU PATIENT
+              PARAMÈTRES D'ENTRÉE DU PATIENT
             </div>
             <div class="field-group">
-              <label>TYPE D'ALLERGIE IDENTIFIÃ‰</label>
+              <label>TYPE D'ALLERGIE IDENTIFIÉ</label>
               <div class="radio-group">
                 <label v-for="opt in allergieOptions" :key="opt.value" class="radio-label">
                   <input type="radio" v-model="form.allergie" :value="opt.value" />
@@ -81,13 +81,13 @@
               <span v-if="errors.allergie" class="error-msg">{{ errors.allergie }}</span>
             </div>
             <div class="field-group">
-              <label>NIVEAU DE RÃ‰PONSE ALLERGIQUE (BASE 100)</label>
+              <label>NIVEAU DE RÉPONSE ALLERGIQUE (BASE 100)</label>
               <div class="input-wrapper">
                 <input type="number" min="0" max="100" step="1" v-model.number="form.niveau" placeholder="00" class="input-field" />
                 <span class="unit">%</span>
               </div>
               <span v-if="errors.niveau" class="error-msg">{{ errors.niveau }}</span>
-              <p class="field-hint">RÃ©fÃ©rence : RelevÃ© allergologique + calibration LSTM (Î±=0.3)</p>
+              <p class="field-hint">Référence : Relevé allergologique + calibration LSTM (α=0.3)</p>
             </div>
           </section>
 
@@ -95,10 +95,10 @@
             <div class="section-title">
               <span class="section-id">SECTION B</span>
               VECTEUR DE POIDS LSTM
-              <span v-if="!boxUnlocked" class="badge locked">SYSTÃˆME VERROUILLÃ‰</span>
+              <span v-if="!boxUnlocked" class="badge locked">SYSTÈME VERROUILLÉ</span>
             </div>
             <div :class="['weights-container', { 'is-locked': !boxUnlocked }]">
-              <p class="field-hint" style="margin-bottom:12px">ParamÃ¨tres requis : Ligne K du tableau de calibration (Dossier sÃ©curisÃ©).</p>
+              <p class="field-hint" style="margin-bottom:12px">Paramètres requis : Ligne K du tableau de calibration (Dossier sécurisé).</p>
               <div class="weights-grid">
                 <div v-for="(_, i) in form.weights" :key="i" class="weight-field">
                   <label>W{{ i + 1 }}</label>
@@ -112,7 +112,7 @@
         </div>
 
         <div class="ui-footer">
-          <button class="btn-validate" @click="validate">EXÃ‰CUTER L'ALGORITHME DE DIAGNOSTIC</button>
+          <button class="btn-validate" @click="validate">EXÉCUTER L'ALGORITHME DE DIAGNOSTIC</button>
           <span v-if="globalError" class="error-msg global-error">{{ globalError }}</span>
         </div>
       </template>
@@ -133,7 +133,7 @@ const CORRECT_NIVEAU   = 35
 const CORRECT_WEIGHTS  = [0.70, 0.75, 0.72, 0.68, 0.77, 0.74, 0.69, 0.78, 0.73, 0.71]
 
 const allergieOptions = [
-  { value: 'medicamenteuse',   label: 'MÃ©dicamenteuse'   },
+  { value: 'medicamenteuse',   label: 'Médicamenteuse'   },
   { value: 'alimentaire',      label: 'Alimentaire'      },
   { value: 'environnementale', label: 'Environnementale' },
   { value: 'contact',          label: 'De contact'       },
@@ -153,11 +153,11 @@ function validate() {
   let ok = true
 
   if (form.allergie !== CORRECT_ALLERGIE) {
-    errors.allergie = 'ERREUR : CatÃ©gorie non concordante avec les relevÃ©s cliniques.'
+    errors.allergie = 'ERREUR : Catégorie non concordante avec les relevés cliniques.'
     ok = false
   }
   if (form.niveau !== CORRECT_NIVEAU) {
-    errors.niveau = 'ERREUR : Niveau de rÃ©ponse invalide.'
+    errors.niveau = 'ERREUR : Niveau de réponse invalide.'
     ok = false
   }
 
@@ -170,7 +170,7 @@ function validate() {
       }
     })
     if (weightErrors) {
-      errors.weights = 'ERREUR : Un ou plusieurs poids du vecteur sont hors tolÃ©rance.'
+      errors.weights = 'ERREUR : Un ou plusieurs poids du vecteur sont hors tolérance.'
       ok = false
     }
   } else {
@@ -188,10 +188,10 @@ function validate() {
     showComputer.value = false // Fermer automatiquement l'ordinateur
     startConfetti()
 
-    // âœ… Notifier le dashboard parent â€” succÃ¨s enigme 2
+    // âœ… Notifier le dashboard parent â€” succès enigme 2
     notifyEnigmaCompleted(true, 2)
   } else {
-    globalError.value = "Ã‰chec de la validation. VÃ©rifiez les paramÃ¨tres d'entrÃ©e."
+    globalError.value = "Échec de la validation. Vérifiez les paramètres d'entrée."
   }
 }
 

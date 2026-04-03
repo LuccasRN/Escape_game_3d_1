@@ -10,7 +10,7 @@
           <button class="choice-btn" @click="choose('Emma')">Emma</button>
           <button class="choice-btn" @click="choose('Les deux')">Les deux</button>
         </div>
-        <button class="close-btn" @click="closeChoice">Retourner enquÃªter</button>
+        <button class="close-btn" @click="closeChoice">Retourner enquêter</button>
       </div>
     </div>
   </div>

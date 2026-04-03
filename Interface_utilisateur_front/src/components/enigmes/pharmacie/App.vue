@@ -1,4 +1,4 @@
-﻿<script setup>
+<script setup>
 import { ref, watch } from 'vue'
 import { useGameState } from './composables/useGameState.vue'
 import IntroScreen from './components/IntroScreen.vue'
@@ -22,9 +22,9 @@ const {
 
 const inventoryDocs = computed(() => [
   { id: 'bear', label: "Note de l'inspecteur", sub: "Code terminal + indices", icon: "image", discovered: discoveredClues.includes('bear') },
-  { id: 'tables', label: "Registre pharmaceutique", sub: "Tables de rÃ©fÃ©rence", icon: "image", discovered: discoveredClues.includes('tables') },
-  { id: 'medicine', label: "BoÃ®te de mÃ©dicaments", sub: "Ã‰tiquette", icon: "image", discovered: discoveredClues.includes('medicine') },
-  { id: 'computer', label: "Terminal d'accÃ¨s", sub: "Valider les traitements", icon: "computer", discovered: discoveredClues.includes('computer') }
+  { id: 'tables', label: "Registre pharmaceutique", sub: "Tables de référence", icon: "image", discovered: discoveredClues.includes('tables') },
+  { id: 'medicine', label: "Boîte de médicaments", sub: "Étiquette", icon: "image", discovered: discoveredClues.includes('medicine') },
+  { id: 'computer', label: "Terminal d'accès", sub: "Valider les traitements", icon: "computer", discovered: discoveredClues.includes('computer') }
 ])
 
 function openDocFromInventory(id) {

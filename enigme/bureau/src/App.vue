@@ -224,11 +224,20 @@ onMounted(() => {
     sceneApi.init()
   }
   window.addEventListener('keydown', onEscapeKey)
+  window.addEventListener('message', onMessage)
 })
+
+const onMessage = (event) => {
+  if (event.data?.type === 'ENIGMA_COMPLETED') {
+    onGameCompleted()
+    closeOverlay('computer')
+  }
+}
 
 onBeforeUnmount(() => {
   sceneApi.dispose()
   window.removeEventListener('keydown', onEscapeKey)
+  window.removeEventListener('message', onMessage)
 })
 </script>
 
