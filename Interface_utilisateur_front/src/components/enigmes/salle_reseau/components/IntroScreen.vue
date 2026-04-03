@@ -14,7 +14,7 @@
     <section class="star-wars">
       <div class="crawl" @animationend="skipIntro">
         <div class="title">
-          <p>Épisode IV</p>
+          <p>Épisode I</p>
           <h1>L'ENQUÊTE</h1>
         </div>
         
