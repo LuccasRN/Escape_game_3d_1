@@ -55,6 +55,15 @@
         <p class="time-result">Temps : <strong>{{ displayTime }}</strong></p>
         <p class="score-result">Score : <strong class="score-value">{{ finalScore }} / 1000</strong></p>
         <button @click="goBack" class="btn-back-success">Retour au dashboard</button>
+
+        <div class="logos-container">
+          <a href="https://isis.univ-jfc.fr/le-connected-health-lab" target="_blank" rel="noopener noreferrer">
+            <img src="/CHL-01.png" alt="Connected Health Lab" class="footer-logo">
+          </a>
+          <a href="https://isis.univ-jfc.fr/" target="_blank" rel="noopener noreferrer">
+            <img src="/logo-ISIS-horizontal-RVB-HD.png" alt="ISIS" class="footer-logo">
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -408,6 +417,27 @@ onBeforeUnmount(() => {
   transition: transform 0.2s;
 }
 .btn-back-success:hover { transform: translateY(-2px); }
+
+.logos-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.footer-logo {
+  height: 48px;
+  object-fit: contain;
+  transition: transform 0.2s;
+  background-color: white;
+  padding: 4px;
+  border-radius: 4px;
+}
+.footer-logo:hover {
+  transform: scale(1.05);
+}
 
 /* Cacher dynamiquement le bouton d'indice de la vue lorsqu'elle est résolue */
 :deep(.hint-btn-wrapper) {
