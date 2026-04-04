@@ -28,20 +28,22 @@
         <label>Email</label>
         <input type="email" v-model="email" placeholder="jean.dupont@example.com" required />
       </div>
+      
       <div class="form-group">
-          <label>Vous êtes :</label>
-          <div class="input-container">
-            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            <select v-model="profil" required class="input-field select-field">
-              <option value="" disabled selected>Sélectionnez votre profil...</option>
-              <option value="Lycéen">Lycéen</option>
-              <option value="Prépa ISIS (1A / 2A)">Étudiant - Prépa ISIS (1A / 2A)</option>
-              <option value="Cycle Ingénieur ISIS (3A+)">Étudiant - Cycle Ingénieur ISIS (3A et +)</option>
-              <option value="Enseignant">Enseignant / Formateur</option>
-              <option value="Autre">Autre</option>
-            </select>
-          </div>
+        <label>Vous êtes :</label>
+        <div class="input-with-icon">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <select v-model="profil" required :class="{'placeholder-active': !profil}">
+            <option value="" disabled selected>Sélectionnez votre profil...</option>
+            <option value="Lycéen">Lycéen</option>
+            <option value="Prépa ISIS (1A / 2A)">Étudiant - Prépa ISIS (1A / 2A)</option>
+            <option value="Cycle Ingénieur ISIS (3A+)">Étudiant - Cycle Ingénieur ISIS (3A et +)</option>
+            <option value="Enseignant">Enseignant / Formateur</option>
+            <option value="Autre">Autre</option>
+          </select>
         </div>
+      </div>
+
       <div class="form-group">
         <label>Mot de passe</label>
         <div class="password-input">
@@ -88,7 +90,7 @@ const nom = ref('')
 const prenom = ref('')
 const dateNaissance = ref('')
 const email = ref('')
-const profil = ref('') // ✅ NUEVO: Declaramos la variable
+const profil = ref('') 
 const errorMsg = ref('')
 const loading = ref(false)
 
@@ -118,7 +120,7 @@ const handleSubmit = async () => {
       dateNaissance: dateNaissance.value,
       email: email.value,
       password: password.value,
-      profil: profil.value // ✅ NUEVO: Lo enviamos al backend
+      profil: profil.value 
     })
     if (response.success) {
       localStorage.setItem('registeredUserName', `${prenom.value} ${nom.value}`)
@@ -208,6 +210,63 @@ input:focus {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.5);
 }
+
+/* =======================================
+   ESTILOS NUEVOS PARA EL SELECT
+   ======================================= */
+.input-with-icon {
+  position: relative;
+  width: 100%;
+}
+
+.input-with-icon .icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.4);
+  pointer-events: none; /* El click atraviesa el ícono */
+}
+
+select {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.8rem; /* Padding extra a la izq para el ícono */
+  background: var(--glass-input-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  appearance: none; /* Quita la flechita nativa por defecto en algunos navegadores */
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+}
+
+select.placeholder-active {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+select:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Fondo oscuro para las opciones del desplegable */
+select option {
+  background-color: #1e293b; /* slate-800 para combinar con el tema oscuro */
+  color: white;
+  padding: 10px;
+}
+
+select option:disabled {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ======================================= */
 
 .password-input {
   position: relative;

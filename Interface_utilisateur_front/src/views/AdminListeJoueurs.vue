@@ -41,7 +41,6 @@
       </div>
     </div>
 
-    <!-- Loading -->
     <div v-if="loading" class="loading-row">
       <div class="spinner"></div>
       <span>Chargement des joueurs...</span>
@@ -66,7 +65,7 @@
               <th>Joueur</th>
               <th>Email</th>
               <th>Âge</th>
-              <th>Établissement</th>
+              <th>Profil</th>
               <th>Inscription</th>
               <th>Action</th>
             </tr>
@@ -88,7 +87,7 @@
               <td class="text-low">
                 {{ player.age !== '—' ? player.age + ' ans' : '—' }}
               </td>
-              <td class="text-low">{{ player.etablissement || '—' }}</td>
+              <td class="text-low">{{ player.profil }}</td>
               <td class="text-low">{{ player.dateInscription }}</td>
               <td>
                 <button
@@ -158,9 +157,11 @@ onMounted(async () => {
       pseudo: p.pseudo || '—',
       email: p.email,
       age: calcularEdad(p.dateNaissance),
-      etablissement: p.etablissement || '—',
+      // ✅ Guardamos el profil en lugar del etablissement
+      profil: p.profil || '—',
       dateInscription: formatDate(p.dateInscription),
-      dateNaissanceRaw: p.dateNaissance,
+      // ✅ Guardamos la fecha RAW de inscripción para poder ordenarla matemáticamente
+      dateInscriptionRaw: p.dateInscription,
       color: COLORS[i % COLORS.length]
     }))
   } catch (err) {
@@ -177,23 +178,28 @@ onMounted(async () => {
 const filteredPlayers = computed(() => {
   let list = [...allPlayers.value]
 
+  // BÚSQUEDA
   if (searchQuery.value.trim()) {
     const q = searchQuery.value.toLowerCase()
     list = list.filter(p =>
       p.name.toLowerCase().includes(q) ||
       p.email.toLowerCase().includes(q) ||
       p.pseudo.toLowerCase().includes(q) ||
-      (p.etablissement || '').toLowerCase().includes(q)
+      // ✅ Ahora la barra de búsqueda también busca por el nombre del Profil
+      (p.profil || '').toLowerCase().includes(q)
     )
   }
 
+  // ORDENAMIENTO
   if (sortKey.value === 'nom') {
     list.sort((a, b) => a.name.localeCompare(b.name))
   } else if (sortKey.value === 'date') {
+    // ✅ CORREGIDO: Ahora usa 'dateInscriptionRaw' en lugar de la fecha de nacimiento.
+    // Ordena del más reciente (nuevo inscrito) al más antiguo.
     list.sort((a, b) => {
-      const da = new Date(a.dateNaissanceRaw || 0)
-      const db = new Date(b.dateNaissanceRaw || 0)
-      return db - da
+      const da = new Date(a.dateInscriptionRaw || 0).getTime()
+      const db = new Date(b.dateInscriptionRaw || 0).getTime()
+      return db - da 
     })
   } else if (sortKey.value === 'age') {
     list.sort((a, b) => {
