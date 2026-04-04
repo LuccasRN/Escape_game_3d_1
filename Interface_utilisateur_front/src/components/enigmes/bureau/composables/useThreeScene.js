@@ -327,21 +327,21 @@ console.log('Model loaded and added to scene.', gltf.scene)
   function onKeyDown(event) {
     if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return
     switch (event.code) {
-      case 'KeyW': case 'KeyZ': case 'ArrowUp': keys.forward = true; break
-      case 'KeyS': case 'ArrowDown': keys.backward = true; break
-      case 'KeyA': case 'KeyQ': case 'ArrowLeft': keys.left = true; break
-      case 'KeyD': case 'ArrowRight': keys.right = true; break
-      case 'Space': keys.up = true; break
+      case 'z': case 'w':  case 'arrowup': keys.forward = true; break
+      case 's': case 'arrowdown': keys.backward = true; break
+      case 'q': case 'a':  case 'arrowleft': keys.left = true; break
+      case 'd': case 'arrowright': keys.right = true; break
+      case ' ': keys.up = true; break
     }
   }
 
   function onKeyUp(event) {
     switch (event.code) {
-      case 'KeyW': case 'KeyZ': case 'ArrowUp': keys.forward = false; break
-      case 'KeyS': case 'ArrowDown': keys.backward = false; break
-      case 'KeyA': case 'KeyQ': case 'ArrowLeft': keys.left = false; break
-      case 'KeyD': case 'ArrowRight': keys.right = false; break
-      case 'Space': keys.up = false; break
+      case 'z': case 'w':  case 'arrowup': keys.forward = false; break
+      case 's': case 'arrowdown': keys.backward = false; break
+      case 'q': case 'a':  case 'arrowleft': keys.left = false; break
+      case 'd': case 'arrowright': keys.right = false; break
+      case ' ': keys.up = false; break
     }
   }
 

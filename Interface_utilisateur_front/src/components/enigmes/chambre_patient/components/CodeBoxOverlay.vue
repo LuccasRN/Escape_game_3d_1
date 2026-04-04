@@ -46,16 +46,31 @@
               <rect width="100%" height="100%" fill="url(#grid)" />
 
               <!-- Connexions possibles -->
-              <line
+              <g
+                class="hover-group"
                 v-for="(edge, i) in edges"
                 :key="'e' + i"
-                :x1="nodes[edge.from].x"
-                :y1="nodes[edge.from].y"
-                :x2="nodes[edge.to].x"
-                :y2="nodes[edge.to].y"
-                :class="edgeClass(i)"
                 @click="selectEdge(i)"
-              />
+                style="cursor: pointer"
+              >
+                <!-- Hitbox Line -->
+                <line
+                  :x1="nodes[edge.from].x"
+                  :y1="nodes[edge.from].y"
+                  :x2="nodes[edge.to].x"
+                  :y2="nodes[edge.to].y"
+                  stroke="transparent"
+                  stroke-width="25"
+                />
+                <!-- Visible Line -->
+                <line
+                  :x1="nodes[edge.from].x"
+                  :y1="nodes[edge.from].y"
+                  :x2="nodes[edge.to].x"
+                  :y2="nodes[edge.to].y"
+                  :class="edgeClass(i)"
+                />
+              </g>
 
               <!-- Nœuds -->
               <g v-for="(node, i) in nodes" :key="'n' + i">
@@ -571,6 +586,7 @@ function close() {
   stroke-width: 2;
   opacity: 0.6;
 }
+.hover-group:hover .edge-idle,
 .edge-idle:hover {
   stroke: #40d0f0;
   stroke-width: 3;

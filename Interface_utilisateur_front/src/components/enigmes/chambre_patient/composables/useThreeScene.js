@@ -86,7 +86,7 @@ export function useThreeScene(containerRef) {
 		controls.enableDamping = true
 		controls.dampingFactor = 0.08
 		controls.enablePan = false
-		controls.enableZoom = false
+		controls.enableZoom = true
 		controls.target.set(0, 1.5, 0)
 		controls.maxPolarAngle = Math.PI / 2
 		controls.minPolarAngle = Math.PI * 0.15
@@ -196,69 +196,33 @@ export function useThreeScene(containerRef) {
 	}
 
 	function onKeyDown(event) {
-		switch (event.code) {
-			case 'KeyW':
-			case 'KeyZ':
-			case 'ArrowUp':
-				keys.forward = true
-				event.preventDefault()
-				break
-			case 'KeyS':
-			case 'ArrowDown':
-				keys.backward = true
-				event.preventDefault()
-				break
-			case 'KeyA':
-			case 'KeyQ':
-			case 'ArrowLeft':
-				keys.left = true
-				event.preventDefault()
-				break
-			case 'KeyD':
-			case 'ArrowRight':
-				keys.right = true
-				event.preventDefault()
-				break
-			case 'Space':
-				keys.up = true
-				event.preventDefault()
-				break
-			case 'ShiftLeft':
-			case 'ShiftRight':
-				keys.down = true
-				break
-		}
-	}
+        if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+        const k = event.key.toLowerCase();
+        if (['z', 'q', 's', 'd', ' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift'].includes(k)) {
+            event.preventDefault();
+        }
+        switch (k) {
+            case 'z': case 'arrowup': keys.forward = true; break;
+            case 's': case 'arrowdown': keys.backward = true; break;
+            case 'q': case 'arrowleft': keys.left = true; break;
+            case 'd': case 'arrowright': keys.right = true; break;
+            case ' ': keys.up = true; break;
+            case 'shift': keys.down = true; break;
+        }
+    }
 
-	function onKeyUp(event) {
-		switch (event.code) {
-			case 'KeyW':
-			case 'KeyZ':
-			case 'ArrowUp':
-				keys.forward = false
-				break
-			case 'KeyS':
-			case 'ArrowDown':
-				keys.backward = false
-				break
-			case 'KeyA':
-			case 'KeyQ':
-			case 'ArrowLeft':
-				keys.left = false
-				break
-			case 'KeyD':
-			case 'ArrowRight':
-				keys.right = false
-				break
-			case 'Space':
-				keys.up = false
-				break
-			case 'ShiftLeft':
-			case 'ShiftRight':
-				keys.down = false
-				break
-		}
-	}
+    function onKeyUp(event) {
+        if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+        const k = event.key.toLowerCase();
+        switch (k) {
+            case 'z': case 'arrowup': keys.forward = false; break;
+            case 's': case 'arrowdown': keys.backward = false; break;
+            case 'q': case 'arrowleft': keys.left = false; break;
+            case 'd': case 'arrowright': keys.right = false; break;
+            case ' ': keys.up = false; break;
+            case 'shift': keys.down = false; break;
+        }
+    }
 
 	function updateMovement() {
 		if (!camera || !controls) return
