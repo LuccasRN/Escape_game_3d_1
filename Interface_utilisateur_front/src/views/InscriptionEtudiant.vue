@@ -29,20 +29,6 @@
         <input type="email" v-model="email" placeholder="jean.dupont@example.com" required />
       </div>
       <div class="form-group">
-          <label>Vous êtes :</label>
-          <div class="input-container">
-            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            <select v-model="profil" required class="input-field select-field">
-              <option value="" disabled selected>Sélectionnez votre profil...</option>
-              <option value="Lycéen">Lycéen</option>
-              <option value="Prépa ISIS (1A / 2A)">Étudiant - Prépa ISIS (1A / 2A)</option>
-              <option value="Cycle Ingénieur ISIS (3A+)">Étudiant - Cycle Ingénieur ISIS (3A et +)</option>
-              <option value="Enseignant">Enseignant / Formateur</option>
-              <option value="Autre">Autre</option>
-            </select>
-          </div>
-        </div>
-      <div class="form-group">
         <label>Mot de passe</label>
         <div class="password-input">
           <input type="password" v-model="password" placeholder="••••••••" required />
@@ -88,7 +74,6 @@ const nom = ref('')
 const prenom = ref('')
 const dateNaissance = ref('')
 const email = ref('')
-const profil = ref('') // ✅ NUEVO: Declaramos la variable
 const errorMsg = ref('')
 const loading = ref(false)
 
@@ -117,12 +102,11 @@ const handleSubmit = async () => {
       prenom: prenom.value,
       dateNaissance: dateNaissance.value,
       email: email.value,
-      password: password.value,
-      profil: profil.value // ✅ NUEVO: Lo enviamos al backend
+      password: password.value
     })
     if (response.success) {
       localStorage.setItem('registeredUserName', `${prenom.value} ${nom.value}`)
-      router.push('/dashboard')
+      router.push('/introduction')
     }
   } catch (error) {
     errorMsg.value = error.message || 'Erreur lors de l\'inscription.'
