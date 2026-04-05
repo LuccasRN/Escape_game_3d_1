@@ -56,18 +56,22 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults()) // Utiliza la configuración de CorsConfig.java
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Permitir todas las peticiones OPTIONS (Preflight de CORS)
+                
+                // 1. FUNDAMENTAL PARA VUE.JS: Permitir preflight de CORS
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
                 
-                // ✅ MODIFICADO: Permitir temporalmente TODO para probar el despliegue
-                .anyRequest().permitAll() 
-
-                // ⬇️ COMENTADO TEMPORALMENTE HASTA ASEGURAR QUE EL DESPLIEGUE FUNCIONA ⬇️
-                // .requestMatchers("/api/auth/**").permitAll()
-                // .requestMatchers("/images/**").permitAll()
-                // .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                // .requestMatchers("/api/game/**").authenticated()
-                // .anyRequest().authenticated()
+                // 2. RUTAS PÚBLICAS: Acceso libre para login, registro e imágenes
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/images/**").permitAll()
+                
+                // 3. RUTAS DE ADMINISTRADOR: Solo usuarios con el rol ADMIN
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                
+                // 4. RUTAS DEL JUEGO: Requieren que el usuario haya iniciado sesión (tenga un token JWT válido)
+                .requestMatchers("/api/game/**").authenticated()
+                
+                // 5. REGLA FINAL: Cualquier otra ruta que no esté en esta lista, se bloquea por defecto
+                .anyRequest().authenticated()
             );
 
         http.authenticationProvider(authenticationProvider());
