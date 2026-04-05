@@ -27,8 +27,7 @@ export const authService = {
         prenom: userData.prenom,
         nom: userData.nom,
         pseudo: userData.pseudo || userData.prenom,
-        // ✅ NUEVO: Enviamos 'profil' en lugar de 'etablissement'
-        profil: userData.profil, 
+        etablissement: userData.etablissement || 'CHL',
         dateNaissance: userData.dateNaissance,
       }),
     });
@@ -116,16 +115,13 @@ export const gameService = {
   },
 
   // Valide la réponse d'un puzzle et enregistre l'attempt
-  async validatePuzzle(enigmaId, answer, timeSpentSeconds = 0, hintsUsed = 0) {
+  async validatePuzzle(enigmaId, answer) {
     const response = await fetch(`${API_BASE_URL}/game/validate-puzzle`, {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({
         puzzleId: String(enigmaId),
         answer: answer,
-        // ✅ Enviamos el tiempo y las pistas al backend
-        timeSpentSeconds: timeSpentSeconds,
-        hintsUsed: hintsUsed
       }),
     });
     if (!response.ok) throw new Error('Erreur lors de la validation');

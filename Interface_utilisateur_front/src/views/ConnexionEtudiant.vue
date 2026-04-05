@@ -49,7 +49,7 @@ const handleLogin = async () => {
   try {
     const response = await authService.login(email.value, password.value)
     if (response.success) {
-      router.push('/dashboard')
+      router.push('/introduction')
     }
   } catch (error) {
     errorMsg.value = 'Email ou mot de passe incorrect.'
