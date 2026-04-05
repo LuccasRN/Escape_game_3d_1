@@ -1,4 +1,4 @@
-﻿import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import Accueil from '../views/Accueil.vue'
 import ConnexionEtudiant from '../views/ConnexionEtudiant.vue'
 import InscriptionEtudiant from '../views/InscriptionEtudiant.vue'
@@ -9,6 +9,9 @@ import AdminListeJoueurs from '../views/AdminListeJoueurs.vue'
 import AdminJoueurDetail from '../views/AdminJoueurDetail.vue'
 import StatistiquesEtudiant from '../views/StatistiquesEtudiant.vue'
 import EnigmeBridge from '../views/EnigmeBridge.vue'
+import IntroductionHistoire from '../views/IntroductionHistoire.vue'
+import ConclusionHistoire from '../views/ConclusionHistoire.vue'
+import TestFiches from '../views/TestFiches.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,6 +20,18 @@ const router = createRouter({
     { path: '/connexion', name: 'connexion', component: ConnexionEtudiant },
     { path: '/inscription', name: 'inscription', component: InscriptionEtudiant },
     { path: '/admin', name: 'admin', component: AccesAdministrateur },
+    {
+      path: '/introduction',
+      name: 'introduction',
+      component: IntroductionHistoire,
+      meta: { requiresAuth: true, role: 'ROLE_USER' }
+    },
+    {
+      path: '/conclusion',
+      name: 'conclusion',
+      component: ConclusionHistoire
+    },
+    { path: '/test-fiches', name: 'test-fiches', component: TestFiches },
     {
       path: '/dashboard',
       name: 'dashboard',

@@ -16,7 +16,7 @@
       <h2>1 - OBSERVATIONS EXTERNES</h2>
       <ul>
         <li>Œdème facial marqué (lèvres, paupières, langue)</li>
-        <li>à‰ruption urticarienne étendue sur le tronc</li>
+        <li>Éruption urticarienne étendue sur le tronc</li>
         <li>Cyanose distale</li>
         <li>Pas de lésions traumatiques visibles</li>
       </ul>
@@ -26,13 +26,13 @@
         <li><strong>Voies respiratoires :</strong> œdème laryngé sévère, obstruction glottique</li>
         <li><strong>Poumons :</strong> congestion importante, présence de sécrétions purulentes dans les bronches</li>
         <li><strong>Cœur :</strong> rythme rapide sans anomalie morphologique</li>
-        <li><strong>Estomac :</strong> résidus médicamenteux (analyse compatible avec corticoà¯des)</li>
+        <li><strong>Estomac :</strong> résidus médicamenteux (analyse compatible avec corticoïdes)</li>
       </ul>
 
-      <h2>3 - EXAMENS COMPLà‰MENTAIRES</h2>
+      <h2>3 - EXAMENS COMPLÉMENTAIRES</h2>
       <p><strong>A. Dosage de tryptase sérique post-mortem</strong><br>
       Résultat : 58 µg/L (N &lt; 11 µg/L)<br>
-      Taux fortement augmenté, compatible avec une réaction anaphylactique aiguà«.</p>
+      Taux fortement augmenté, compatible avec une réaction anaphylactique aiguë.</p>
 
       <p><strong>B. Bactériologie post-mortem (culture pulmonaire)</strong><br>
       Résultat : Streptococcus pneumoniae détecté<br>
@@ -42,11 +42,11 @@
       Résultat : Négative, y compris pour Influenza A et B</p>
 
       <h2>4 - CONCLUSION</h2>
-      <p>Le décès est attribué à  <strong>une réaction allergique sévère liée à  l'administration de corticoà¯des</strong> (Prednisolone). La tryptase élevée valide l'origine allergique.</p>
+      <p>Le décès est attribué à  <strong>une réaction allergique sévère liée à  l'administration de corticoïdes</strong> (Prednisolone). La tryptase élevée valide l'origine allergique.</p>
       <p>La présence d'une infection pulmonaire à  pneumocoque est un facteur aggravant, mais non responsable direct du décès.</p>
       <p><em>Le contexte médicamenteux soulève la question d'une erreur thérapeutique ou d'un acte intentionnel.</em></p>
 
-      <p><strong>CAUSE DU Dà‰CàˆS :</strong> Choc anaphylactique secondaire à  l'exposition aux corticoà¯des.</p>
+      <p><strong>CAUSE DU DÉCÈS :</strong> Choc anaphylactique secondaire à  l'exposition aux corticoïdes.</p>
       <p><strong>FACTEURS CONTRIBUTIFS :</strong> La patiente souffrait d'une <strong>pneumopathie bactérienne</strong> (infection respiratoire à  Streptococcus pneumoniae).</p>
 
       <div class="signature">

@@ -2,15 +2,15 @@
   <div class="q-container">
     <div class="q-header">
       <div class="q-badge">DOSSIER JUDICIAIRE</div>
-      <h3 class="q-title">Clà´ture Dossier : Calvin, S.</h3>
+      <h3 class="q-title">Clôture Dossier : Calvin, S.</h3>
     </div>
 
     <div v-if="!isSafeOpened" class="q-locked">
       <div class="locked-icon">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       </div>
-      <div class="locked-badge">ACCàˆS REFUSà‰</div>
-      <p class="locked-text">Vous devez d'abord lire le rapport d'autopsie classé dans le coffre-fort avant d'être autorisé à  remplir la clà´ture.</p>
+      <div class="locked-badge">ACCÈS REFUSÉ</div>
+      <p class="locked-text">Vous devez d'abord lire le rapport d'autopsie classé dans le coffre-fort avant d'être autorisé à remplir la clôture.</p>
     </div>
 
     <template v-else>

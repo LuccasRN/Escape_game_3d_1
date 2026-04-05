@@ -124,7 +124,7 @@ const handleSubmit = async () => {
     })
     if (response.success) {
       localStorage.setItem('registeredUserName', `${prenom.value} ${nom.value}`)
-      router.push('/dashboard')
+      router.push('/introduction')
     }
   } catch (error) {
     errorMsg.value = error.message || 'Erreur lors de l\'inscription.'

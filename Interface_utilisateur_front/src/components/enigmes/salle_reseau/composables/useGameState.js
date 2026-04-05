@@ -30,7 +30,7 @@ export function useGameState() {
     if (activeWindow.value === 'documents') return "C:\\\\Users\\\\Admin\\\\Documents"
     if (activeWindow.value === 'network') return "Réseau Local"
     if (activeWindow.value === 'system') return "Propriétés Système"
-    if (activeWindow.value === 'questionnaire') return "Clà´ture Enquête"
+    if (activeWindow.value === 'questionnaire') return "Clôture Enquête"
     if (activeWindow.value === 'secret_file') return "\\\\\\\\Serveur_Admin\\\\Fichiers_Secrets"
     return ""
   })
