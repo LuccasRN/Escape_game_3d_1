@@ -2,7 +2,7 @@ package com.escapegame.chl_backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod; // Importante añadir esto
+import org.springframework.http.HttpMethod; 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -56,14 +56,18 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults()) // Utiliza la configuración de CorsConfig.java
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // ✅ CLAVE AQUÍ: Permitir todas las peticiones OPTIONS (Preflight de CORS)
+                // Permitir todas las peticiones OPTIONS (Preflight de CORS)
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
                 
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/images/**").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/game/**").authenticated()
-                .anyRequest().authenticated()
+                // ✅ MODIFICADO: Permitir temporalmente TODO para probar el despliegue
+                .anyRequest().permitAll() 
+
+                // ⬇️ COMENTADO TEMPORALMENTE HASTA ASEGURAR QUE EL DESPLIEGUE FUNCIONA ⬇️
+                // .requestMatchers("/api/auth/**").permitAll()
+                // .requestMatchers("/images/**").permitAll()
+                // .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                // .requestMatchers("/api/game/**").authenticated()
+                // .anyRequest().authenticated()
             );
 
         http.authenticationProvider(authenticationProvider());
