@@ -2,7 +2,7 @@
 // 🚀 SERVICE D'API - CONNECTÉ AU BACKEND SPRING BOOT
 // =========================================================================
 
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = 'http://13.51.174.246/api';
 
 // Helper pour les headers authentifiés
 function authHeaders() {
